@@ -13,7 +13,6 @@
   }
 }
 .notifications-button.open {
-  animation: bell 0.3s ease-out both;
   transform-origin: 50% 0;
 }
 
@@ -40,11 +39,7 @@
 .notifications-menu main {
   min-height: 100%;
 }
-.notifications-menu .notification {
-  animation: appear-smooth 0.3s ease-out 0.1s both;
-}
 .notifications-menu footer {
-  animation: slide-up 0.3s ease-out 0.2s both;
   position: sticky;
   bottom: 0;
   border-top: var(--hairline-width) solid var(--outline-color);

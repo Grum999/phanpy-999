@@ -840,11 +840,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   .deck-backdrop .deck.deck-view-full {
     /* min-width: 100%; */
     width: 100%;
-    background-image: radial-gradient(
-      circle,
-      transparent 30em,
-      var(--bg-faded-color)
-    );
   }
   .deck-backdrop .deck.deck-view-full > * {
     max-width: calc(var(--main-width) + 32px);
@@ -958,12 +953,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   height: 100vh;
   height: 100dvh;
   background-color: var(--average-color-alpha);
-  background-image: radial-gradient(
-    closest-side,
-    var(--average-color) 10%,
-    var(--average-color-alpha) 40%,
-    transparent 100%
-  );
 }
 .carousel .carousel-item :is(img, video) {
   width: auto;
@@ -1223,7 +1212,7 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   /* overflow: hidden; */
   background-color: var(--bg-color);
   width: 100%;
-  max-width: calc(var(--main-width) - 50px - 16px);
+  max-width: 60vw;
   border-radius: 16px 16px 0 0;
   position: relative;
 }
@@ -1250,30 +1239,15 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   justify-content: center;
   z-index: 2;
   background-color: transparent;
-  background-image: radial-gradient(
-    circle,
-    var(--close-button-bg-color) 0px 14px,
-    transparent 14px
-  );
   color: var(--close-button-color);
 }
 .sheet .sheet-close.outer {
   margin-top: -44px;
-  background-image: radial-gradient(
-    circle,
-    var(--bg-faded-color) 0px 14px,
-    transparent 14px
-  );
 }
 .sheet .sheet-close:is(:hover, :focus) {
   color: var(--close-button-hover-color);
 }
 .sheet .sheet-close:active {
-  background-image: radial-gradient(
-    circle,
-    var(--close-button-bg-active-color) 0px 14px,
-    transparent 14px
-  );
 }
 .sheet header {
   padding: 16px 16px 8px;

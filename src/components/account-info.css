@@ -10,7 +10,6 @@
 }
 
 .account-container .account-moved {
-  animation: fade-in 0.3s both ease-in-out 0.3s;
   padding: 16px;
   background-color: var(--bg-color);
   position: absolute;
@@ -59,7 +58,6 @@
   user-select: none;
   -webkit-user-drag: none;
   opacity: 0;
-  transition: opacity 0.3s ease-out;
 }
 .account-container .header-banner.loaded {
   opacity: 1;
@@ -73,22 +71,18 @@
   pointer-events: none;
 }
 .account-container .header-banner:hover {
-  animation: position-object 5s ease-in-out 1s 5;
 }
 .account-container .header-banner:active {
   mask-image: none;
 }
 .account-container .header-banner:active + header .avatar + * {
-  transition: opacity 0.3s ease-in-out;
   opacity: 0 !important;
 }
 .account-container .header-banner:active + header .avatar {
-  transition: filter 0.3s ease-in-out;
   filter: none !important;
 }
 .account-container .header-banner:active + header .avatar img {
-  transition: border-radius 0.3s ease-in-out;
-  border-radius: 8px;
+  border-radius: 0.25em;
 }
 
 @media (min-height: 480px) {
@@ -106,7 +100,6 @@
   text-shadow: -8px 0 12px -6px var(--bg-color), 8px 0 12px -6px var(--bg-color),
     -8px 0 24px var(--header-color-3, --bg-color),
     8px 0 24px var(--header-color-4, --bg-color);
-  animation: fade-in 0.3s both ease-in-out 0.1s;
 }
 .account-container header .avatar {
   /* box-shadow: -8px 0 24px var(--header-color-3, --bg-color),
@@ -117,13 +110,6 @@
 }
 .account-container header .avatar:not(.has-alpha) img {
   border-radius: inherit;
-}
-
-.account-container main > *:first-child {
-  animation: fade-in 0.3s both ease-in-out 0.15s;
-}
-.account-container main > *:first-child ~ * {
-  animation: fade-in 0.3s both ease-in-out 0.2s;
 }
 
 .account-container .note {
@@ -157,8 +143,6 @@
   }
 
   .stats-avatars-bunch {
-    animation: appear 1s both ease-in-out;
-
     > *:not(:first-child) {
       margin: 0 0 0 -4px;
     }
@@ -379,9 +363,6 @@
   .timeline-start .account-container:before {
     opacity: 0.25;
   }
-}
-.timeline-start .account-container:hover:before {
-  animation: shine 1s ease-in-out 1s;
 }
 
 #list-add-remove-container .list-add-remove {

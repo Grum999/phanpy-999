@@ -532,8 +532,8 @@
 }
 
 #custom-emojis-sheet {
-  max-height: 50vh;
-  max-height: 50dvh;
+  max-height: 60vh;
+  max-height: 60dvh;
 }
 #custom-emojis-sheet main {
   mask-image: none;
@@ -553,18 +553,10 @@
   flex-wrap: wrap;
 }
 #custom-emojis-sheet .custom-emojis-list button {
-  border-radius: 8px;
-  background-image: radial-gradient(
-    closest-side,
-    var(--img-bg-color),
-    transparent
-  );
+  border-radius: 0.25em;
 }
 #custom-emojis-sheet .custom-emojis-list button:is(:hover, :focus) {
   filter: none;
-  background-color: var(--bg-faded-color);
-}
-#custom-emojis-sheet .custom-emojis-list button img {
 }
 #custom-emojis-sheet .custom-emojis-list button:is(:hover, :focus) img {
   transform: scale(1.5);

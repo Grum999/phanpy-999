@@ -61,7 +61,6 @@
   top: 0;
   left: -100%;
   pointer-events: none;
-  animation: shine2 5s ease-in-out 1s infinite;
 }
 @media (prefers-color-scheme: dark) {
   #welcome {
@@ -76,20 +75,27 @@
 }
 #welcome img {
   vertical-align: top;
-  transition: transform 0.3s ease-out;
 }
 #welcome h1 img {
   filter: drop-shadow(-1px -1px var(--bg-blur-color))
     drop-shadow(0 -1px 1px #fff)
     drop-shadow(0 16px 32px var(--drop-shadow-color));
 }
+
+#welcome h1 p {
+  color: rgb(164, 191, 247);
+  filter: blur(0.375px);
+  text-shadow: 2px 1px 4px rgb(164,191,247);
+}
+
 @media (prefers-color-scheme: dark) {
   #welcome h1 img {
     filter: none;
   }
 }
 
-#welcome h1:hover img {
+#welcome h1:hover img,
+#welcome h1:hover p {
   transform: scale(1.05);
 }
 #welcome .desc {

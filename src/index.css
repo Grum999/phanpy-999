@@ -179,7 +179,7 @@ textarea {
 button,
 .button {
   display: inline-block;
-  padding: 8px 12px;
+  padding: 0.65em;
   border-radius: 2.5em;
   border: 0;
   background-color: var(--button-bg-color);

@@ -55,11 +55,9 @@ ul.link-list.hashtag-list li a {
   /* right: 8px; */
   background-color: var(--bg-color);
   border: 1px solid var(--outline-color);
-  box-shadow: 0 4px 24px var(--drop-shadow-color);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  animation: appear-smooth 0.2s ease-out;
   overflow: hidden;
 }
 .search-popover[hidden] {
