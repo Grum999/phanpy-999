@@ -1,12 +1,12 @@
 var isDev = /dev\./.test(window.location.hostname);
 var _rollbarConfig = {
-  accessToken: 'ec3e07829d324a29abf6c83472a9740d',
+  accessToken: '',
   captureUncaught: true,
   captureUnhandledRejections: true,
   enabled: isDev,
-  hostSafeList: ['dev.phanpy.social', 'phanpy.social'],
+  hostSafeList: [],
   payload: {
-    environment: isDev ? 'development' : 'production',
+    environment: 'production',
   },
 };
 
