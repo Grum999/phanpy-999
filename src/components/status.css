@@ -1,32 +1,12 @@
 /* REBLOG + REPLY-TO */
 
 .status-reblog {
-  background: linear-gradient(
-    160deg,
-    var(--reblog-faded-color),
-    transparent min(160px, 50%)
-  );
 }
 .status-group {
-  background: linear-gradient(
-    160deg,
-    var(--group-faded-color),
-    transparent min(160px, 50%)
-  );
 }
 .status-reply-to {
-  background: linear-gradient(
-    160deg,
-    var(--reply-to-faded-color),
-    transparent min(160px, 50%)
-  );
 }
 :is(.status-reblog, .status-group) .status-reply-to {
-  background: linear-gradient(
-    -20deg,
-    var(--reply-to-faded-color),
-    transparent min(160px, 50%)
-  );
 }
 .visibility-direct {
   --yellow-stripes: repeating-linear-gradient(
@@ -75,13 +55,6 @@
   font-size: var(--text-size);
 }
 .status.large {
-  --fade-in-out-bg: linear-gradient(
-    to bottom,
-    transparent,
-    var(--bg-color) 70px,
-    var(--bg-color) calc(100% - 50px),
-    transparent
-  );
   padding-bottom: 8px;
   background-image: var(--fade-in-out-bg);
 }
@@ -111,13 +84,10 @@
     color: var(--text-color);
     background-color: var(--bg-faded-color);
     border: 1px dashed var(--link-color);
-    box-shadow: 0 0 0 1px var(--bg-color), 0 -5px 10px var(--bg-color),
-      0 -5px 15px var(--bg-color), 0 -5px 20px var(--bg-color);
     padding: 0.5em 0.75em;
     border-radius: 10em;
     font-size: 90%;
     white-space: nowrap;
-    transition: transform 0.2s ease-out;
   }
 
   &:is(:hover, :focus):after {
@@ -127,11 +97,8 @@
 }
 .status-card-link:is(:hover, :focus) .status-card {
   border-color: var(--outline-hover-color);
-  box-shadow: inset 0 0 0 4px var(--bg-faded-blur-color);
 }
 .status-card-link:is(:hover, :focus) .status-card img {
-  animation: position-object 5s ease-in-out 1s 5;
-  animation-duration: var(--anim-duration, 5s);
 }
 .status-card-link:is(:active) .status-card {
   background-color: var(--bg-faded-color);
@@ -143,9 +110,6 @@
   padding: 12px;
   border: 1px solid var(--outline-color);
   background-color: var(--bg-color);
-  box-shadow: inset 0 0 4px var(--outline-color);
-  /* box-shadow: inset 0 0 0 2px var(--bg-faded-color); */
-  /* filter: drop-shadow(0 2px 4px var(--bg-faded-color)); */
 }
 .status-card:has(.status-badge:not(:empty)) {
   border-top-right-radius: 8px;
@@ -171,12 +135,10 @@
 }
 .status-card :is(.content.truncated, .poll, .media-container.truncated) {
   /* font-size: inherit !important; */
-  mask-image: linear-gradient(to bottom, #000 80px, transparent);
 }
 .status.small
   .status-card
   :is(.content.truncated, .poll, .media-container.truncated) {
-  mask-image: linear-gradient(to bottom, #000 40px, transparent);
 }
 .status-card .card {
   display: none;
@@ -199,7 +161,6 @@
 }
 .status.skeleton {
   color: var(--outline-color);
-  animation: skeleton-breathe 6s linear infinite;
   user-select: none;
   pointer-events: none;
   contain: layout;
@@ -226,21 +187,17 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  mask-image: linear-gradient(to right, black 90%, transparent);
   position: relative;
 }
 .status.filtered .avatar {
   opacity: 0.5;
-  transition: opacity 0.7s ease-in;
 }
 .status.filtered:is(:hover, :focus, :active) .avatar {
   opacity: 1;
 }
 .status.filtered :is(.status-filtered-info-1, .status-filtered-info-2) {
-  transition: all 0.2s ease-out;
 }
 .status.filtered:hover :is(.status-filtered-info-1, .status-filtered-info-2) {
-  transition-delay: 0.5s;
 }
 .status.filtered .status-filtered-info-1 {
   opacity: 0.5;
@@ -303,7 +260,6 @@
   /* text-overflow: ellipsis; */
 }
 .status > .container > .meta .meta-name {
-  mask-image: linear-gradient(to left, transparent, black 16px);
   flex-grow: 1;
 }
 .status.large > .container > .meta {
@@ -369,13 +325,6 @@
   line-height: 1;
   text-transform: uppercase;
   opacity: 0.75;
-  background-image: repeating-linear-gradient(
-    -70deg,
-    transparent,
-    transparent 3px,
-    var(--reply-to-faded-color) 3px,
-    var(--reply-to-faded-color) 4px
-  );
   font-weight: bold;
 }
 .status-direct-badge {
@@ -394,7 +343,6 @@
   text-transform: uppercase;
   opacity: 0.75;
   font-weight: bold;
-  box-shadow: inset 0 0 0 1px var(--reply-to-color);
 }
 .status-filtered-badge {
   flex-shrink: 0;
@@ -478,7 +426,6 @@
   user-select: none;
   contain: layout;
   transform: scale(0.97);
-  transition: transform 0.1s ease-in-out;
 }
 .status
   .content-container.has-spoiler:not(.show-spoiler)
@@ -548,12 +495,6 @@
   max-height: 40dvh;
 }
 .timeline-deck .status:not(.truncated .status) .content.truncated {
-  mask-image: linear-gradient(
-    to top,
-    transparent,
-    rgba(0, 0, 0, 0.5) 1em,
-    black 1.5em
-  );
 }
 .timeline-deck .status:not(.truncated .status) .content.truncated:after {
   content: attr(data-read-more);
@@ -570,9 +511,6 @@
   border-radius: 10em;
   font-size: 90%;
   white-space: nowrap;
-  box-shadow: 0 0 0 1px var(--bg-color), 0 -5px 10px var(--bg-color),
-    0 -5px 15px var(--bg-color), 0 -5px 20px var(--bg-color);
-  transition: transform 0.5s ease-in-out;
 }
 .timeline-deck .status .content.truncated:hover:after {
   color: var(--link-color);
@@ -867,8 +805,6 @@
 }
 .status .media img:is(:hover, :focus),
 a:focus-visible .status .media img {
-  animation: position-object 5s ease-in-out 1s 5;
-  animation-duration: var(--anim-duration, 5s);
 }
 body:has(#modal-container .carousel) .status .media img:hover {
   animation: none;
@@ -895,12 +831,10 @@ body:has(#modal-container .carousel) .status .media img:hover {
   transform: translate(-50%, -50%);
   color: var(--media-fg-color);
   background-color: var(--media-bg-color);
-  box-shadow: inset 0 0 0 2px var(--media-outline-color);
   display: flex;
   place-content: center;
   place-items: center;
   border-radius: 70px;
-  transition: transform 0.2s ease-in-out;
 }
 .status :is(.media-video, .media-audio):hover:not(:active) .media-play {
   transform: translate(-50%, -50%) scale(1.1);
@@ -971,7 +905,6 @@ body:has(#modal-container .carousel) .status .media img:hover {
 
 .status:not(.large) .hashtag-stuffing {
   opacity: 0.75;
-  transition: opacity 0.2s ease-in-out;
 }
 .status:not(.large) .hashtag-stuffing:is(:hover, :focus, :focus-within) {
   opacity: 1;
@@ -1045,7 +978,6 @@ body:has(#modal-container .carousel) .status .media img:hover {
   padding: 4px 8px;
   background-color: var(--bg-faded-color);
   border: 1px solid var(--outline-color);
-  box-shadow: 0 4px 16px var(--drop-shadow-color);
   max-width: min(var(--main-width), calc(100% - 32px));
   display: flex;
   align-items: center;
@@ -1078,7 +1010,6 @@ body:has(#modal-container .carousel) .status .media img:hover {
   .carousel-item button.media-alt {
     opacity: 0;
     transform: translateY(var(--bottom)) scale(0.95);
-    transition: all 0.2s ease-in-out;
   }
   .carousel-item:hover button.media-alt {
     opacity: 1;
@@ -1146,8 +1077,6 @@ body:has(#modal-container .carousel) .status .media img:hover {
 }
 .card:is(:hover, :focus) img,
 a:focus-visible .card img {
-  animation: position-object 5s ease-in-out 1s 5;
-  animation-duration: var(--anim-duration, 5s);
 }
 .card p {
   margin: 0;
@@ -1211,11 +1140,9 @@ a:focus-visible .card img {
 }
 a.card {
   text-decoration: none;
-  transition: opacity 0.2s ease-in-out;
 }
 a.card:is(:hover, :focus) {
   border: 1px solid var(--link-color);
-  box-shadow: 0 0 0 2px var(--link-faded-color);
 }
 a.card:is(:hover, :focus):visited {
   border-color: var(--link-visited-color);
@@ -1233,18 +1160,11 @@ a.card:is(:hover, :focus):visited {
 
 .poll {
   display: inline-block;
-  transition: opacity 0.2s ease-in-out;
   margin-top: 8px;
   border-radius: 16px;
   border: 1px solid var(--outline-color);
   background-color: var(--bg-faded-color);
-  background-image: linear-gradient(
-    to bottom,
-    var(--bg-color) 50%,
-    var(--bg-faded-color)
-  );
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px var(--bg-color);
   min-width: 50%;
 }
 .poll.loading {
@@ -1279,7 +1199,6 @@ a.card:is(:hover, :focus):visited {
   background-color: var(--link-faded-color);
   opacity: 0;
   pointer-events: none;
-  transition: all 0.2s ease-in-out;
   z-index: 0;
 }
 .poll-option:first-child:after {
@@ -1419,7 +1338,6 @@ a.card:is(:hover, :focus):visited {
   }
 }
 .status .action > button.plain.reblog-button.checked .icon {
-  animation: reblogged 1s ease-in-out;
 }
 .status .action > button.plain.favourite-button:is(:hover, :focus) {
   color: var(--favourite-color);
@@ -1443,7 +1361,6 @@ a.card:is(:hover, :focus):visited {
   }
 }
 .status .action > button.plain.favourite-button.checked .icon {
-  animation: hearted 1s ease-out;
 }
 .status .action > button.plain.bookmark-button.checked {
   color: var(--link-color);
@@ -1468,7 +1385,6 @@ a.card:is(:hover, :focus):visited {
   }
 }
 .status .action > button.plain.bookmark-button.checked .icon {
-  animation: bookmarked 1s ease-in-out;
 }
 
 /* ENHANCED CONTENT */
@@ -1480,11 +1396,6 @@ a.card:is(:hover, :focus):visited {
   overflow: auto;
   width: 100%;
   border: 1px solid var(--outline-color);
-  background: linear-gradient(
-    to bottom right,
-    var(--bg-faded-color),
-    transparent 160px
-  );
   white-space: pre-wrap;
   line-height: 1.2;
 }
@@ -1526,16 +1437,12 @@ a.card:is(:hover, :focus):visited {
   }
 }
 .status-badge > * {
-  animation: swoosh-from-right 1s cubic-bezier(0.51, 0.28, 0.16, 1.26) both;
 }
 .status-badge > *:nth-child(2) {
-  animation-delay: 0.1s;
 }
 .status-badge > *:nth-child(3) {
-  animation-delay: 0.2s;
 }
 .status-badge > *:nth-child(4) {
-  animation-delay: 0.3s;
 }
 
 /* MISC */
@@ -1621,7 +1528,6 @@ a.card:is(:hover, :focus):visited {
 
     &.truncated {
       .status {
-        mask-image: linear-gradient(to bottom, #000 80px, transparent);
       }
 
       &:after {
@@ -1635,13 +1541,10 @@ a.card:is(:hover, :focus):visited {
         color: var(--text-color);
         background-color: var(--bg-faded-color);
         border: 1px dashed var(--link-color);
-        box-shadow: 0 0 0 1px var(--bg-color), 0 -5px 10px var(--bg-color),
-          0 -5px 15px var(--bg-color), 0 -5px 20px var(--bg-color);
         padding: 0.5em 0.75em;
         border-radius: 10em;
         font-size: 90%;
         white-space: nowrap;
-        transition: transform 0.2s ease-out;
       }
 
       &:is(:hover, :focus):after {
@@ -1720,8 +1623,6 @@ a.card:is(:hover, :focus):visited {
     border-width: 2px;
 
     &:is(:hover, :focus):not(:active) {
-      transition: 0.15s ease-out;
-      transition-property: transform, opacity, mix-blend-mode;
       transform: scale(1.15);
       opacity: 0.9;
       mix-blend-mode: normal;

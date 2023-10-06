@@ -86,7 +86,7 @@
     --bg-color: #242526;
     --bg-faded-color: #18191a;
     --bg-blur-color: #0009;
-    --bg-faded-blur-color: #18191a99;
+    --bg-faded-blur-color: #18191ad9;
     --text-color: #f0f2f5;
     --text-insignificant-color: #f0f2f599;
     --link-light-color: #6494ed99;
@@ -102,7 +102,7 @@
     --reply-to-faded-color: #ffa60017;
     --divider-color: rgba(255, 255, 255, 0.1);
     --bg-blur-color: #24252699;
-    --backdrop-color: rgba(0, 0, 0, 0.5);
+    --backdrop-color: rgba(0, 0, 0, 0.75);
     --backdrop-solid-color: #333;
     --loader-color: #f0f2f599;
     --comment-line-color: #565656;
@@ -164,12 +164,6 @@ hr {
   border: 0;
   padding: 0;
   margin: 16px 0;
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    var(--divider-color),
-    transparent
-  );
 }
 
 button,
@@ -268,7 +262,6 @@ button,
 :is(button, .button).swap > * {
   grid-column: 1;
   grid-row: 1;
-  transition: opacity 0.3s;
 }
 :is(button, .button).swap > *:nth-child(2) {
   opacity: 0;
@@ -437,10 +430,8 @@ kbd {
 .shazam-container {
   display: grid;
   grid-template-rows: 1fr;
-  transition: grid-template-rows 0.5s ease-in-out;
 }
 .shazam-container:not(.no-animation) {
-  animation: shazam 0.5s ease-in-out both !important;
 }
 .shazam-container[hidden] {
   grid-template-rows: 0fr;
@@ -460,11 +451,9 @@ kbd {
 .shazam-container-horizontal {
   display: grid;
   grid-template-columns: 1fr;
-  transition: grid-template-columns 0.5s ease-in-out;
   white-space: nowrap;
 }
 .shazam-container-horizontal:not(.no-animation) {
-  animation: shazam-horizontal 0.5s ease-in-out both !important;
 }
 .shazam-container-horizontal[hidden] {
   grid-template-columns: 0fr;

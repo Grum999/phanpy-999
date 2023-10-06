@@ -52,7 +52,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   height: 100dvh;
   overflow: auto;
   overflow-x: hidden;
-  transition: opacity 0.1s ease-in-out;
   overscroll-behavior: contain;
   scroll-behavior: smooth;
   background-color: var(--bg-color);
@@ -107,7 +106,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   cursor: default;
   z-index: 10;
   user-select: none;
-  transition: transform 0.5s ease-in-out;
   user-select: none;
 }
 .deck > header[hidden] {
@@ -118,8 +116,7 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 .deck > header .header-grid {
   background-color: var(--bg-blur-color);
-  background-image: linear-gradient(to bottom, var(--bg-color), transparent);
-  backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(2px);
   border-bottom: var(--hairline-width) solid var(--divider-color);
   min-height: 3em;
   display: grid;
@@ -183,27 +180,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
     opacity: 0.25;
   }
 }
-.deck > header.loading:after {
-  pointer-events: none;
-  content: '';
-  display: block;
-  height: 4px;
-  position: absolute;
-  bottom: 0;
-  width: 50%;
-  left: 25%;
-  background-image: radial-gradient(
-    farthest-side at bottom,
-    var(--link-color),
-    transparent
-  );
-  animation: indeterminate-bar 1s ease-in-out infinite alternate;
-}
-@media (min-width: 40em) {
-  .deck > header.loading:after {
-    height: 8px;
-  }
-}
 
 .timeline {
   margin: 0 auto;
@@ -237,17 +213,7 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   --avatar-margin-end: 12px;
 }
 .timeline.contextual > li {
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    transparent var(--line-start),
-    var(--comment-line-color) var(--line-start),
-    var(--comment-line-color) var(--line-end),
-    transparent var(--line-end),
-    transparent
-  );
   background-repeat: no-repeat;
-  transition: opacity 0.3s ease-in-out;
 }
 .timeline.contextual > li:first-child {
   background-position: 0 calc(16px + var(--avatar-size));
@@ -271,15 +237,12 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 .timeline.contextual .replies[data-scroll-left]:not([data-scroll-left='0']) {
   background-color: var(--bg-color);
-  box-shadow: inset 0 -3px var(--comment-line-color),
-    inset 0 3px var(--comment-line-color);
 }
 .timeline.contextual .replies[data-comments-level='4'] {
   overflow-x: auto;
 }
 .timeline.contextual .replies[data-comments-level='4']:has(.replies) {
   overflow-x: auto;
-  mask-image: linear-gradient(to left, transparent, black 32px);
 }
 .timeline.contextual
   .replies[data-comments-level='4']:has(.replies)
@@ -469,7 +432,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   font-size: 12px;
   color: var(--text-insignificant-color);
   user-select: none;
-  box-shadow: 0 0 0 2px var(--bg-color);
   position: relative;
   list-style: none;
   white-space: nowrap;
@@ -487,11 +449,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 .timeline.contextual > li .replies[open] > .replies-summary {
   color: var(--text-color);
   background-color: var(--comment-line-color);
-  background-image: linear-gradient(
-    to top right,
-    var(--comment-line-color),
-    var(--bg-faded-color)
-  );
 }
 .timeline.contextual > li .replies[open] > .replies-summary {
   border-bottom-left-radius: 0;
@@ -507,15 +464,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
     var(--thread-start) + var(--line-margin-end) * var(--comments-level)
   );
   --line-end: calc(var(--line-start) + var(--line-width));
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    transparent var(--line-start),
-    var(--comment-line-color) var(--line-start),
-    var(--comment-line-color) var(--line-end),
-    transparent var(--line-end),
-    transparent
-  );
   background-repeat: no-repeat;
 }
 /* .timeline.contextual > li .replies .replies li {
@@ -594,11 +542,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 .timeline-deck.compact .status {
   max-height: max(25vh, 160px);
   overflow: hidden;
-  mask-image: linear-gradient(
-    rgba(0, 0, 0, 1),
-    rgba(0, 0, 0, 1) 80%,
-    transparent 95%
-  );
 }
 .timeline-deck.compact .status .meta ~ * {
   pointer-events: none;
@@ -620,15 +563,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   --line-start: 40px;
   --line-width: 3px;
   --line-end: calc(var(--line-start) + var(--line-width));
-  background-image: linear-gradient(
-    to right,
-    transparent,
-    transparent var(--line-start),
-    var(--comment-line-color) var(--line-start),
-    var(--comment-line-color) var(--line-end),
-    transparent var(--line-end),
-    transparent
-  );
   background-repeat: no-repeat;
 }
 .timeline:not(.flat) > li.timeline-item-container-start {
@@ -712,10 +646,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   text-decoration-line: none;
   color: inherit;
   user-select: none;
-  transition: background-color 0.2s ease-out;
-  -webkit-tap-highlight-color: transparent;
-  animation: appear 0.2s ease-out;
-  -webkit-touch-callout: none;
 }
 @media (pointer: coarse) {
   .status-focus:not(.hero .status-focus) {
@@ -741,11 +671,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 
 .status-carousel {
   --carousel-faded-color: var(--bg-faded-color);
-  background: linear-gradient(
-    to bottom right,
-    var(--carousel-faded-color),
-    transparent 150%
-  );
   position: relative;
   container-type: inline-size;
 }
@@ -754,12 +679,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: radial-gradient(
-      ellipse 50% 32px at bottom center,
-      var(--carousel-faded-color),
-      transparent
-    ),
-    linear-gradient(to top, var(--bg-color), transparent 64px);
   background-repeat: no-repeat;
   background-position: bottom center;
 }
@@ -862,14 +781,10 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   text-decoration-line: none;
   color: inherit;
   user-select: none;
-  transition: background-color 0.2s ease-out;
-  -webkit-tap-highlight-color: transparent;
-  animation: appear 0.2s ease-out;
   border: 1px solid var(--outline-color);
   background-color: var(--bg-blur-color);
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px var(--bg-color);
 }
 .status-carousel-link::focus {
   background-color: var(--link-bg-hover-color);
@@ -892,7 +807,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   z-index: 1000;
   display: flex;
   background-color: var(--backdrop-color);
-  animation: appear 0.2s ease-out;
 }
 .deck-backdrop > a {
   flex-grow: 1;
@@ -910,10 +824,8 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   width: var(--main-width);
   max-width: 100vw;
   background-color: var(--bg-color);
-  box-shadow: -1px 0 var(--bg-color);
 }
 .deck-backdrop .deck.slide-in:not(.deck-view-full) {
-  animation: slide-in 0.5s var(--timing-function);
 }
 .deck-backdrop .deck .status {
   max-width: var(--main-width);
@@ -976,7 +888,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   position: absolute;
   z-index: 2;
   top: 3em;
-  animation: fade-from-top 0.3s var(--timing-function);
   left: 50%;
   margin-top: 16px;
   transform: translate(-50%, 0);
@@ -1010,7 +921,6 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   width: 70%;
   flex-grow: 1;
   background-color: var(--backdrop-solid-color);
-  animation: appear 0.3s var(--timing-function) both;
 }
 .media-modal-container.loading {
   display: flex;
@@ -1114,8 +1024,6 @@ button.carousel-dot {
   color: var(--text-color);
   background-color: var(--bg-faded-blur-color);
   border: 1px solid var(--outline-color);
-  box-shadow: 0 4px 32px var(--drop-shadow-color);
-  transition: all 0.2s ease-out;
 }
 button.carousel-dot {
   background-color: transparent;
@@ -1138,9 +1046,6 @@ button.carousel-dot {
   border-radius: 999px;
   background-color: var(--bg-faded-blur-color);
   border: 1px solid var(--outline-color);
-  box-shadow: 0 4px 32px var(--drop-shadow-color);
-  /* backdrop-filter: blur(12px) invert(0.25); */
-  transition: background-color 0.2s ease-out;
   &:hover {
     background-color: var(--bg-color);
   }
@@ -1154,7 +1059,6 @@ button.carousel-dot {
   pointer-events: none;
 } */
 button.carousel-dot .icon {
-  transition: all 0.2s;
   transform: scale(0.5);
 }
 button.carousel-dot:not(.active) .icon {
@@ -1173,7 +1077,6 @@ button.carousel-dot:is(.active, [disabled].active) .icon {
 @media (hover: hover) {
   .carousel-top-controls {
     transform: translateY(-100%);
-    transition: transform 0.2s ease-in-out;
   }
   .carousel-controls {
     transform: scale(0);
@@ -1184,7 +1087,6 @@ button.carousel-dot:is(.active, [disabled].active) .icon {
     transform: scale(1.2);
   }
   .carousel-controls :is(.button, button).carousel-button:active {
-    transition-duration: 0s;
   }
 
   :is(.carousel-top-controls, .carousel-controls)[hidden] {
@@ -1228,7 +1130,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   }
   #modal-container > div,
   .status-deck {
-    transition: all 0.3s ease-in-out;
   }
   /* Don't do this if there's a modal sheet (.sheet) */
   :has(#modal-container .carousel):has(.status-deck):not(
@@ -1262,7 +1163,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
     user-select: auto;
   }
   .deck-backdrop .media-modal-container + .status-deck:not(.slide-in) {
-    animation: appear 0.3s ease-in-out;
   }
   body:has(.media-modal-container + .status-deck) .media-post-link {
     display: none;
@@ -1281,9 +1181,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   background-color: var(--button-bg-blur-color);
   backdrop-filter: blur(16px);
   z-index: 10;
-  box-shadow: 0 3px 8px -1px var(--drop-shadow-color),
-    0 10px 36px -4px var(--button-bg-blur-color);
-  transition: all 0.3s ease-in-out;
 }
 .deck-container:has(header[hidden]) ~ #compose-button,
 #compose-button[hidden] {
@@ -1293,7 +1190,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   opacity: 0;
 }
 #compose-button .icon {
-  transition: transform 0.3s ease-in-out;
 }
 #compose-button[hidden] .icon {
   transform: rotate3d(0, 0, 1, -25deg);
@@ -1329,9 +1225,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   width: 100%;
   max-width: calc(var(--main-width) - 50px - 16px);
   border-radius: 16px 16px 0 0;
-  box-shadow: 0 -1px 32px var(--drop-shadow-color);
-  animation: slide-up 0.3s var(--timing-function);
-  /* border: 1px solid var(--outline-color); */
   position: relative;
 }
 .sheet-max {
@@ -1411,7 +1304,6 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
 }
 .sheet header + main {
   padding-top: 0;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 10px);
 }
 
 /* ICON */
@@ -1461,6 +1353,7 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
 body > .szh-menu-container {
   position: fixed !important;
   z-index: 10;
+  min-width: 50vw;
 }
 .szh-menu-container:has(.szh-menu--state-open) {
   inset: 0;
@@ -1474,17 +1367,13 @@ body > .szh-menu-container {
   background-color: var(--bg-color);
   border: 1px solid var(--outline-color);
   border-radius: 8px;
-  box-shadow: 0 3px 16px -3px var(--drop-shadow-color);
   text-align: left;
-  animation: appear-smooth 0.15s ease-in-out;
-  width: 16em;
   max-width: 90vw;
   /* overflow: hidden; */
 }
 .szh-menu[aria-label='Submenu'] {
   background-color: var(--bg-blur-color);
   backdrop-filter: blur(4px);
-  box-shadow: 0 3px 24px -3px var(--drop-shadow-color);
 }
 .szh-menu__header {
   margin: -8px 0 8px;
@@ -1492,7 +1381,6 @@ body > .szh-menu-container {
   color: var(--text-insignificant-color);
   font-size: 90%;
   background-color: var(--bg-faded-color);
-  /* background-image: linear-gradient(to top, var(--bg-faded-color), transparent); */
   text-shadow: 0 1px 0 var(--bg-color);
   line-height: 1.2;
   /* border-bottom: 1px solid var(--outline-color); */
@@ -1507,11 +1395,7 @@ body > .szh-menu-container {
 }
 .szh-menu.menu-emphasized {
   border-color: var(--outline-hover-color);
-  box-shadow: 0 3px 16px -3px var(--drop-shadow-color),
-    0 3px 32px var(--drop-shadow-color), 0 3px 48px var(--drop-shadow-color);
   background-color: var(--bg-color);
-  animation-duration: 0.3s;
-  animation-timing-function: ease-in-out;
   width: auto;
 }
 .szh-menu .footer {
@@ -1528,12 +1412,10 @@ body > .szh-menu-container {
   border-radius: 0 0 8px 8px;
 }
 .szh-menu .szh-menu__item {
-  display: flex;
   gap: 8px;
   align-items: center;
   line-height: 1.1;
   padding: 8px 16px !important;
-  transition: all 0.1s ease-in-out;
   text-decoration: none;
   white-space: nowrap;
   overflow: hidden;
@@ -1547,6 +1429,32 @@ body > .szh-menu-container {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.szh-menu .szh-menu__item #accounts-container main {
+    padding: 0 !important;
+}
+
+.szh-menu .szh-menu__item #accounts-container section {
+    margin: 0;
+    padding: 0.5em;
+}
+
+.szh-menu .szh-menu__item #accounts-container section ul.accounts-list a.name-text {
+    display: block;
+}
+
+.szh-menu .szh-menu__item span.icon + span {
+    display: initial;
+    display: inline flow-root list-item;
+    height: 20px;
+    display: inline-block;
+}
+
+.szh-menu .szh-menu__item #accounts-container a.button.plain2 {
+    margin: 0 !important;
+    border-radius: 0.5em;
+}
+
 /* .szh-menu .szh-menu__item * {
   vertical-align: middle;
 } */
@@ -1671,7 +1579,6 @@ body > .szh-menu-container {
   background-color: var(--bg-blur-color);
   backdrop-filter: blur(8px) saturate(3);
   border: var(--hairline-width) solid var(--bg-color);
-  box-shadow: 0 3px 8px -1px var(--drop-shadow-color);
   text-shadow: 0 var(--hairline-width) var(--bg-color), 0 0 8px var(--bg-color);
 }
 .glass-menu .szh-menu__item--hover {
@@ -1715,7 +1622,6 @@ meter.donut {
   background-image: var(--middle-circle),
     conic-gradient(var(--color) var(--fill), var(--outline-color) 0);
   transform: scale(0.7);
-  transition: transform 0.2s ease-in-out;
 }
 meter.donut.warning {
   --color: var(--orange-color);
@@ -1755,17 +1661,11 @@ meter.donut[hidden] {
   text-shadow: 0 1px var(--bg-color);
   background-color: var(--bg-color);
   border: 1px solid var(--outline-color);
-  box-shadow: 0 3px 16px var(--drop-shadow-color),
-    0 6px 16px -3px var(--drop-shadow-color);
 }
 :is(.shiny-pill, :root .toastify.shiny-pill):hover:not(:active) {
   color: var(--text-color);
   border-color: var(--link-color);
   filter: none !important;
-  box-shadow: 0 0 0 1px var(--link-text-color),
-    0 3px 16px var(--drop-shadow-color),
-    0 6px 16px -3px var(--drop-shadow-color),
-    0 6px 16px var(--drop-shadow-color);
 }
 
 /* TOAST */
@@ -1779,8 +1679,6 @@ meter.donut[hidden] {
   text-shadow: 0 calc(var(--hairline-width) * -1) var(--drop-shadow-color);
   background-color: var(--button-bg-color);
   background-image: none;
-  box-shadow: 0 3px 8px -1px var(--drop-shadow-color),
-    0 10px 36px -4px var(--button-bg-blur-color);
 }
 .toastify-bottom {
   margin-bottom: env(safe-area-inset-bottom);
@@ -1790,7 +1688,6 @@ meter.donut[hidden] {
 
 :root .toastify.alert {
   z-index: 1001;
-  box-shadow: 0 8px 32px var(--text-insignificant-color);
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: pointer;
@@ -1814,7 +1711,6 @@ meter.donut[hidden] {
 /* I'm just feeling bored, so having fun here */
 @media (hover: hover) {
   .avatars-stack > * img {
-    transition: transform 0.3s ease-in-out;
   }
   .avatars-stack:hover > *:nth-of-type(odd) img {
     transform: rotate(15deg);
@@ -1935,10 +1831,8 @@ ul.link-list li a .icon {
   filter: none !important;
 }
 .nav-menu-button .avatar {
-  transition: box-shadow 0.3s ease-out;
 }
 .nav-menu-button:is(:hover, :focus, .active) .avatar {
-  box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--link-light-color);
 }
 .nav-menu-button.with-avatar .icon {
   position: absolute;
@@ -1976,8 +1870,6 @@ ul.link-list li a .icon {
   overscroll-behavior: auto;
   flex-basis: min(100vw, 360px);
   flex-shrink: 0;
-  box-shadow: -1px 0 var(--bg-color), -2px 0 var(--drop-shadow-color),
-    -3px 0 var(--bg-color);
 }
 #columns:has(> :nth-child(3)) > *:nth-child(even),
 #columns:has(> :nth-child(3))
@@ -2068,7 +1960,6 @@ ul.link-list li a .icon {
       0 4px 16px var(--drop-shadow-color); */
     /* border-color: var(--outline-hover-color); */
     z-index: 1;
-    box-shadow: inset 0 0 0 1px var(--outline-hover-color);
   }
   #columns .timeline:not(.flat) > li:has(.status-link.is-active),
   #columns
@@ -2101,13 +1992,6 @@ ul.link-list li a .icon {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 16px,
-    black calc(100% - 16px),
-    transparent
-  );
   align-items: center;
 }
 .filter-bar.centered {
@@ -2126,7 +2010,6 @@ ul.link-list li a .icon {
   text-decoration: none;
   white-space: nowrap;
   border: 2px solid transparent;
-  transition: all 0.3s ease-out;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2139,7 +2022,6 @@ ul.link-list li a .icon {
 }
 .filter-bar > a.is-active {
   border-color: var(--link-color);
-  box-shadow: inset 0 0 8px var(--link-faded-color);
 }
 .filter-bar > a > .filter-count {
   font-size: 80%;
@@ -2173,10 +2055,8 @@ ul.link-list li a .icon {
     display: flex;
   }
   .deck-container {
-    transition: transform 0.4s var(--timing-function);
   }
   .deck-container:has(~ .deck-backdrop .deck) {
-    transition: transform 0.4s ease-out;
     transform: translate3d(-5vw, 0, 0);
   }
   .deck-backdrop .deck {
@@ -2195,10 +2075,8 @@ ul.link-list li a .icon {
   }
   .timeline-deck > header .header-grid {
     border-bottom: 0;
-    border-radius: 16px;
     background-color: var(--bg-faded-blur-color);
     background-image: none;
-    border-radius: 16px;
     min-height: 4em;
   }
   .timeline-deck > header[hidden] {
@@ -2214,15 +2092,12 @@ ul.link-list li a .icon {
     margin-top: 24px;
   }
   .timeline:not(.flat) > li {
-    --item-radius: 16px;
+    --item-radius: 0.25em;
     border: 1px solid var(--divider-color);
     margin: 16px 0;
     background-color: var(--bg-color);
     border-radius: var(--item-radius);
     overflow: hidden;
-    box-shadow: 0px 1px var(--bg-blur-color);
-    transition: transform 0.4s var(--timing-function);
-    --back-transition: transform 0.4s ease-out;
   }
   .timeline:not(.flat) > li > a {
     border-radius: inherit;
@@ -2237,7 +2112,6 @@ ul.link-list li a .icon {
     border-top-right-radius: 8px;
   }
   .timeline:not(.flat) > li:has(.status-link.is-active) {
-    transition: var(--back-transition);
     transform: translate3d(-2.5vw, 0, 0);
   }
   .timeline:not(.flat)
@@ -2250,7 +2124,6 @@ ul.link-list li a .icon {
   .timeline:not(.flat)
     > li:not(:has(.status-carousel)):has(.status-link.is-active)
     + li {
-    transition: var(--back-transition);
     transform: translate3d(-1.25vw, 0, 0);
   }
   .timeline:not(.flat)

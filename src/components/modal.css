@@ -9,11 +9,9 @@
   justify-content: center;
   align-items: center;
   background-color: var(--backdrop-color);
-  backdrop-filter: blur(24px);
-  animation: appear 0.5s var(--timing-function) both;
+  backdrop-filter: blur(4px);
 }
 #modal-container > div .sheet {
-  transition: transform 0.3s var(--timing-function);
   transform-origin: center bottom;
 }
 #modal-container > div:has(~ div) .sheet {
