@@ -10,6 +10,7 @@ import safeBoundingBoxPadding from '../utils/safe-bounding-box-padding';
 import states from '../utils/states';
 import store from '../utils/store';
 
+import Accounts from './accounts-menu'
 import Avatar from './avatar';
 import Icon from './icon';
 import MenuLink from './menu-link';
@@ -213,19 +214,22 @@ function NavMenu(props) {
         <section>
           {authenticated ? (
             <>
-              <MenuDivider />
-              {currentAccount?.info?.id && (
-                <MenuLink to={`/${instance}/a/${currentAccount.info.id}`}>
-                  <Icon icon="user" size="l" /> <span>Profile</span>
-                </MenuLink>
-              )}
               <MenuItem
                 onClick={() => {
                   states.showAccounts = true;
-                }}
-              >
-                <Icon icon="group" size="l" /> <span>Accounts&hellip;</span>
+                }}>
+                <Icon icon="group" size="l" />{' '}<span>Accounts&hellip;</span>
               </MenuItem>
+              <MenuItem>
+                <Accounts/>
+              </MenuItem>
+
+              <MenuDivider />
+              {currentAccount?.info?.id && (
+                <MenuLink to={`/${instance}/a/${currentAccount.info.id}`}>
+                  <Icon icon="user" size="l" />{' '}<span>Profile</span>
+                </MenuLink>
+              )}
               <MenuItem
                 onClick={() => {
                   states.showGenericAccounts = {
@@ -235,7 +239,7 @@ function NavMenu(props) {
                   };
                 }}
               >
-                <Icon icon="mute" size="l" /> Muted users&hellip;
+                <Icon icon="mute" size="l" />{' '}<span>Muted users&hellip;</span>
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -246,45 +250,42 @@ function NavMenu(props) {
                   };
                 }}
               >
-                <Icon icon="block" size="l" />
-                Blocked users&hellip;
+                <Icon icon="block" size="l" />{' '}<span>Blocked users&hellip;</span>
               </MenuItem>
               <MenuItem
                 onClick={() => {
                   states.showKeyboardShortcutsHelp = true;
                 }}
               >
-                <Icon icon="keyboard" size="l" />{' '}
-                <span>Keyboard shortcuts</span>
+                <Icon icon="keyboard" size="l" />{' '}<span>Keyboard shortcuts</span>
               </MenuItem>
               <MenuItem
                 onClick={() => {
                   states.showShortcutsSettings = true;
                 }}
               >
-                <Icon icon="shortcut" size="l" />{' '}
-                <span>Shortcuts Settings&hellip;</span>
+                <Icon icon="shortcut" size="l" />{' '}<span>Shortcuts Settings&hellip;</span>
               </MenuItem>
               <MenuItem
                 onClick={() => {
                   states.showSettings = true;
                 }}
               >
-                <Icon icon="gear" size="l" /> <span>Settings&hellip;</span>
+                <Icon icon="gear" size="l" />{' '}<span>Settings&hellip;</span>
               </MenuItem>
             </>
           ) : (
             <>
               <MenuDivider />
               <MenuLink to="/login">
-                <Icon icon="user" size="l" /> <span>Log in</span>
+                <Icon icon="user" size="l" />{' '}<span>Log in</span>
               </MenuLink>
               <MenuItem
                 onClick={() => {
                   states.showSettings = true;
                 }}
               >
-                <Icon icon="gear" size="l" /> <span>Settings&hellip;</span>
+                <Icon icon="gear" size="l" />{' '}<span>Settings&hellip;</span>
               </MenuItem>
             </>
           )}
