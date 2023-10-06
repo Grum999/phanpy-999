@@ -26,3 +26,5 @@ dist-ssr
 # Custom
 .env.dev
 src/data/instances-full.json
+
+*.kate-swp
