@@ -631,7 +631,7 @@
 .status .media-container .media {
   box-sizing: content-box;
   --media-border-width: 1px;
-  --media-radius: 16px;
+  --media-radius: 0.375em;
   --media-radius-inner: 4px;
   border-radius: var(--media-radius);
   overflow: hidden;
