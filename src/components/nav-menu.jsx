@@ -10,7 +10,7 @@ import safeBoundingBoxPadding from '../utils/safe-bounding-box-padding';
 import states from '../utils/states';
 import store from '../utils/store';
 
-import Accounts from './accounts-menu'
+import AccountsMenu from './accounts-menu'
 import Avatar from './avatar';
 import Icon from './icon';
 import MenuLink from './menu-link';
@@ -87,6 +87,7 @@ function NavMenu(props) {
     <>
       <button
         ref={buttonRef}
+        id='btmenu'
         type="button"
         class={`button plain nav-menu-button ${
           moreThanOneAccount ? 'with-avatar' : ''
@@ -220,9 +221,8 @@ function NavMenu(props) {
                 }}>
                 <Icon icon="group" size="l" />{' '}<span>Accounts&hellip;</span>
               </MenuItem>
-              <MenuItem>
-                <Accounts/>
-              </MenuItem>
+
+              <AccountsMenu/>
 
               <MenuDivider />
               {currentAccount?.info?.id && (
