@@ -882,12 +882,13 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 .updates-button {
   position: absolute;
   z-index: 2;
-  top: 3em;
+  top: 3.5em;
   left: 50%;
-  margin-top: 16px;
   transform: translate(-50%, 0);
   font-size: 90%;
   pointer-events: auto;
+  padding: 0.5em 1.5em;
+  white-space: pre;
 }
 .updates-button .icon {
   vertical-align: top;
@@ -1630,17 +1631,16 @@ meter.donut[hidden] {
 
 :is(.shiny-pill, :root .toastify.shiny-pill) {
   pointer-events: auto;
-  color: var(--link-text-color);
   font-weight: 500;
-  text-shadow: 0 1px var(--bg-color);
-  background-color: var(--bg-color);
-  border: 1px solid var(--outline-color);
+  color: var(--button-text-color);
+  background-color: var(--link-color);
 }
 :is(.shiny-pill, :root .toastify.shiny-pill):hover:not(:active) {
-  color: var(--text-color);
-  border-color: var(--link-color);
+  background-color: var(--text-color);
+  color: var(--link-color);
   filter: none !important;
 }
+
 
 /* TOAST */
 
@@ -2062,9 +2062,6 @@ ul.link-list li a .icon {
   }
   .deck > header h1 {
     font-size: 1.5em;
-  }
-  .updates-button {
-    margin-top: 24px;
   }
   .timeline:not(.flat) > li {
     --item-radius: 0.25em;
