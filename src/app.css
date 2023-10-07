@@ -1805,6 +1805,9 @@ ul.link-list li a .icon {
   filter: none !important;
 }
 .nav-menu-button .avatar {
+  width: 45px !important;
+  height: 45px !important;
+  margin-left: -0.65em;
 }
 .nav-menu-button:is(:hover, :focus, .active) .avatar {
 }

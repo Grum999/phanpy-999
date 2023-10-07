@@ -192,7 +192,7 @@
   position: relative;
   cursor: pointer;
   z-index: 1;
-  font-size: 90%;
+  font-size: 75%;
   background-color: var(--bg-blur-color);
   border-radius: 0.25em;
 }
