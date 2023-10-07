@@ -116,7 +116,6 @@
 }
 .notification .status-link:is(:hover, :focus).truncated:after {
   color: var(--link-color);
-  transform: translate(2px, 0);
 }
 .notification .status-link.status-type-mention {
   max-height: 320px;
