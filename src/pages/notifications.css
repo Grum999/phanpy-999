@@ -122,7 +122,7 @@
   filter: none;
   background-color: var(--bg-color);
   margin-top: calc(-16px - 1px);
-  border-color: var(--reply-to-color);
+  border-color: color-mix(in srgb, var(--reply-to-text-color), rgba(255,255,255,0.25));
 }
 .notification .status-link:is(:hover, :focus) {
   background-color: var(--bg-blur-color);
