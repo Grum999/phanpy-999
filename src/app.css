@@ -2043,8 +2043,6 @@ ul.link-list li a .icon {
     background-color: transparent;
   }
   .timeline-deck > header {
-    --margin-top: 8px;
-    top: var(--margin-top);
     margin-inline: 8px;
   }
   .timeline-deck > header .header-grid {
@@ -2068,10 +2066,13 @@ ul.link-list li a .icon {
   .timeline:not(.flat) > li {
     --item-radius: 0.25em;
     border: 1px solid var(--divider-color);
-    margin: 16px 0;
+    margin-top: 0.75em;
     background-color: var(--bg-color);
     border-radius: var(--item-radius);
     overflow: hidden;
+  }
+  .timeline:not(.flat) > li:first-child {
+    margin-top: 0;
   }
   .timeline:not(.flat) > li > a {
     border-radius: inherit;

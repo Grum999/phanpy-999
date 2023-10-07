@@ -183,18 +183,18 @@
 
 #mentions-option {
   float: right;
-  margin-top: 0.5em;
+  margin-top: 0.75em;
 }
 #mentions-option label {
   color: var(--text-insignificant-color);
   display: inline-block;
-  padding: 1em 16px;
+  padding: 0.5em;
   position: relative;
   cursor: pointer;
   z-index: 1;
   font-size: 90%;
   background-color: var(--bg-blur-color);
-  border-radius: 2em;
+  border-radius: 0.25em;
 }
 #mentions-option label:has(:checked) {
   color: var(--text-color);
@@ -272,8 +272,7 @@
 .announcements {
   border: 1px solid var(--outline-color);
   background-color: var(--bg-blur-color);
-  border-radius: 16px;
-  margin: 8px;
+  border-radius: 0.25em;
   overflow: hidden;
 }
 .announcements summary {
