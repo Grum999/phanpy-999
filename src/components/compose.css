@@ -561,3 +561,7 @@
 #custom-emojis-sheet .custom-emojis-list button:is(:hover, :focus) img {
   transform: scale(1.5);
 }
+#custom-emojis-sheet .custom-emojis-list button img.shortcode-emoji {
+  min-width: 2.25em;
+  height: 2.25em;
+}
