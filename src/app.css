@@ -611,6 +611,10 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   position: relative;
   border-radius: 0;
   padding-block: 16px !important;
+
+  .avatars-bunch > .avatar:not(:first-child) {
+    margin-left: -4px;
+  }
 }
 .timeline .show-more:hover {
   filter: none !important;
@@ -1286,6 +1290,13 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
 
 .icon {
   flex-shrink: 0;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 0;
+
+  svg {
+    contain: none;
+  }
 }
 
 /* TAG */
@@ -1299,6 +1310,7 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   display: inline-block;
   margin: 4px;
   align-self: center;
+  text-align: center;
 
   &.clickable {
     cursor: pointer;
@@ -1971,6 +1983,13 @@ ul.link-list li a .icon {
   gap: 8px;
   overflow-x: auto;
   align-items: center;
+  transition: opacity 0.3s ease-out;
+
+  &.loading,
+  .loading > & {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 .filter-bar.centered {
   justify-content: center;
@@ -1992,8 +2011,13 @@ ul.link-list li a .icon {
   align-items: center;
   gap: 8px;
 }
-.filter-bar > a:is(:hover, :focus) {
+.filter-bar > a:focus-visible {
   border-color: var(--link-light-color);
+}
+@media (hover: hover) {
+  .filter-bar > a:hover {
+    border-color: var(--link-light-color);
+  }
 }
 .filter-bar > a > * {
   vertical-align: middle;
