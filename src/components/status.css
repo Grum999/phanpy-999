@@ -48,7 +48,7 @@
 
 .status {
   display: flex;
-  padding: 16px;
+  padding: 0.8rem;
   line-height: 1.4;
   align-items: flex-start;
   position: relative;

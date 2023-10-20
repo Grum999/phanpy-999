@@ -548,8 +548,9 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 
 .timeline-header {
-  padding: 0 16px;
+  padding: 0;
   opacity: 0.75;
+  margin-top: 1.15rem;
 }
 
 .timeline-empty {
@@ -776,7 +777,7 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 
 .ui-state {
-  padding: 16px;
+  padding: 0.25rem 0;
   text-align: center;
 }
 

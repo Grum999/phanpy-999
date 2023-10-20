@@ -1,6 +1,6 @@
 .notification {
   display: flex;
-  padding: 16px !important;
+  padding: 0.75rem 0 !important;
   gap: 12px;
   clear: both;
 
