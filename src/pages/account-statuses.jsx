@@ -10,12 +10,15 @@ import Link from '../components/link';
 import Menu2 from '../components/menu2';
 import Timeline from '../components/timeline';
 import { api } from '../utils/api';
+import pmem from '../utils/pmem';
 import showToast from '../utils/show-toast';
 import states from '../utils/states';
 import { saveStatus } from '../utils/states';
 import useTitle from '../utils/useTitle';
 
 const LIMIT = 20;
+const MIN_YEAR = 1983;
+const MIN_YEAR_MONTH = `${MIN_YEAR}-01`; // Birth of the Internet
 
 const supportsInputMonth = (() => {
   try {
@@ -26,6 +29,17 @@ const supportsInputMonth = (() => {
     return false;
   }
 })();
+
+async function _isSearchEnabled(instance) {
+  const { masto } = api({ instance });
+  const results = await masto.v2.search.fetch({
+    q: 'from:me',
+    type: 'statuses',
+    limit: 1,
+  });
+  return !!results?.statuses?.length;
+}
+const isSearchEnabled = pmem(_isSearchEnabled);
 
 function AccountStatuses() {
   const snapStates = useSnapshot(states);
@@ -57,17 +71,16 @@ function AccountStatuses() {
     if (!sameCurrentInstance) return;
     if (!account?.acct) return;
     (async () => {
-      const results = await masto.v2.search.fetch({
-        q: `from:${account?.acct}`,
-        type: 'statuses',
-        limit: 1,
-      });
-      setSearchEnabled(!!results?.statuses?.length);
+      const enabled = await isSearchEnabled(instance);
+      console.log({ enabled });
+      setSearchEnabled(enabled);
     })();
-  }, [sameCurrentInstance, account?.acct]);
+  }, [instance, sameCurrentInstance, account?.acct]);
 
   async function fetchAccountStatuses(firstLoad) {
-    if (/^\d{4}-[01]\d$/.test(month)) {
+    const isValidMonth = /^\d{4}-[01]\d$/.test(month);
+    const isValidYear = month?.split?.('-')?.[0] >= MIN_YEAR;
+    if (isValidMonth && isValidYear) {
       if (!account) {
         return {
           value: [],
@@ -297,31 +310,33 @@ function AccountStatuses() {
           ))}
           {searchEnabled &&
             (supportsInputMonth ? (
-              <input
-                type="month"
-                class={`filter-field ${month ? 'is-active' : ''}`}
-                disabled={!account?.acct}
-                value={month || ''}
-                min="1983-01" // Birth of the Internet
-                max={new Date().toISOString().slice(0, 7)}
-                onInput={(e) => {
-                  const { value } = e.currentTarget;
-                  setSearchParams(
-                    value
-                      ? {
-                          month: value,
-                        }
-                      : {},
-                  );
-                }}
-              />
+              <label class={`filter-field ${month ? 'is-active' : ''}`}>
+                <Icon icon="month" size="l" />
+                <input
+                  type="month"
+                  disabled={!account?.acct}
+                  value={month || ''}
+                  min={MIN_YEAR_MONTH}
+                  max={new Date().toISOString().slice(0, 7)}
+                  onInput={(e) => {
+                    const { value } = e.currentTarget;
+                    setSearchParams(
+                      value
+                        ? {
+                            month: value,
+                          }
+                        : {},
+                    );
+                  }}
+                />
+              </label>
             ) : (
               // Fallback to <select> for month and <input type="number"> for year
               <MonthPicker
                 class={`filter-field ${month ? 'is-active' : ''}`}
                 disabled={!account?.acct}
                 value={month || ''}
-                min="1983-01" // Birth of the Internet
+                min={MIN_YEAR_MONTH}
                 max={new Date().toISOString().slice(0, 7)}
                 onInput={(e) => {
                   const { value } = e;
@@ -359,7 +374,7 @@ function AccountStatuses() {
           (filterBarRef.current.offsetWidth - active.offsetWidth) / 2,
       });
     }
-  }, [featuredTags, tagged, media, excludeReplies, excludeBoosts]);
+  }, [featuredTags, searchEnabled, ...allSearchParams]);
 
   const accountInstance = useMemo(() => {
     if (!account?.url) return null;
@@ -465,6 +480,7 @@ function MonthPicker(props) {
 
   return (
     <div class={className}>
+      <Icon icon="month" size="l" />
       <select
         ref={monthFieldRef}
         disabled={disabled}
@@ -497,7 +513,7 @@ function MonthPicker(props) {
         type="number"
         disabled={disabled}
         value={_year || new Date().getFullYear()}
-        min={min?.slice(0, 4) || '1983'}
+        min={min?.slice(0, 4) || MIN_YEAR}
         max={max?.slice(0, 4) || new Date().getFullYear()}
         onInput={(e) => {
           const { value } = e.currentTarget;
