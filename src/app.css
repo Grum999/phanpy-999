@@ -1983,7 +1983,7 @@ ul.link-list li a .icon {
   gap: 8px;
   overflow-x: auto;
   align-items: center;
-  transition: opacity 0.3s ease-out;
+  /* transition: opacity 0.3s ease-out; */
 
   &.loading,
   .loading > & {
