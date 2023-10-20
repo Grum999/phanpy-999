@@ -2015,7 +2015,7 @@ ul.link-list li a .icon {
     }
     &.is-active {
       border-color: var(--link-color);
-      box-shadow: inset 0 0 8px var(--link-faded-color);
+      /* box-shadow: inset 0 0 8px var(--link-faded-color); */
     }
 
     :is(input, select) {
