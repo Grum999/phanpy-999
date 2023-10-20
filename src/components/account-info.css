@@ -140,7 +140,7 @@
     var(--private-note-border-color),
     var(--private-note-border-color)
   );
-  transition: transform 0.15s ease-in-out;
+  /* transition: transform 0.15s ease-in-out; */
   overflow-wrap: anywhere;
 
   span {
