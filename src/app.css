@@ -1667,6 +1667,7 @@ meter.donut[hidden] {
   text-shadow: 0 calc(var(--hairline-width) * -1) var(--drop-shadow-color);
   background-color: var(--button-bg-color);
   background-image: none;
+  text-align: center;
 }
 .toastify-bottom {
   margin-bottom: env(safe-area-inset-bottom);
