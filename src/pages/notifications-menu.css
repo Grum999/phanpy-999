@@ -22,6 +22,7 @@
   padding: 0;
   height: 40em;
   overflow: auto;
+  overscroll-behavior: contain;
 }
 .notifications-menu .status {
   font-size: inherit;
