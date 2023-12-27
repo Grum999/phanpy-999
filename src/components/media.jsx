@@ -62,6 +62,7 @@ export const isMediaCaptionLong = mem((caption) =>
 );
 
 function Media({
+  class: className = '',
   media,
   to,
   lang,
@@ -95,7 +96,7 @@ function Media({
 
   const videoRef = useRef();
 
-  let focalBackgroundPosition;
+  let focalPosition;
   if (focus) {
     // Convert focal point to CSS background position
     // Formula from jquery-focuspoint
@@ -104,7 +105,7 @@ function Media({
     // x = 1, y = -1 => 100% 100%
     const x = ((focus.x + 1) / 2) * 100;
     const y = ((1 - focus.y) / 2) * 100;
-    focalBackgroundPosition = `${x.toFixed(0)}% ${y.toFixed(0)}%`;
+    focalPosition = `${x.toFixed(0)}% ${y.toFixed(0)}%`;
   }
 
   const mediaRef = useRef();
@@ -170,6 +171,9 @@ function Media({
   const maxAspectHeight =
     window.innerHeight * (orientation === 'portrait' ? 0.45 : 0.33);
   const maxHeight = orientation === 'portrait' ? 0 : 160;
+  const averageColorStyle = {
+    '--average-color': rgbAverageColor && `rgb(${rgbAverageColor.join(',')})`,
+  };
   const mediaStyles =
     width && height
       ? {
@@ -180,8 +184,11 @@ function Media({
             (width / height) * Math.max(maxHeight, maxAspectHeight)
           }px`,
           aspectRatio: `${width} / ${height}`,
+          ...averageColorStyle,
         }
-      : {};
+      : {
+          ...averageColorStyle,
+        };
 
   const longDesc = isMediaCaptionLong(description);
   const showInlineDesc =
@@ -233,7 +240,7 @@ function Media({
       <Figure>
         <Parent
           ref={parentRef}
-          class={`media media-image`}
+          class={`media media-image ${className}`}
           onClick={onClick}
           data-orientation={orientation}
           data-has-alt={!showInlineDesc}
@@ -244,6 +251,7 @@ function Media({
                   backgroundSize: imageSmallerThanParent
                     ? `${width}px ${height}px`
                     : undefined,
+                  ...averageColorStyle,
                 }
               : mediaStyles
           }
@@ -266,7 +274,7 @@ function Media({
                 }}
                 onError={(e) => {
                   const { src } = e.target;
-                  if (src === mediaURL) {
+                  if (src === mediaURL && mediaURL !== remoteMediaURL) {
                     e.target.src = remoteMediaURL;
                   }
                 }}
@@ -282,10 +290,11 @@ function Media({
                 data-orientation={orientation}
                 loading="lazy"
                 style={{
-                  backgroundColor:
-                    rgbAverageColor && `rgb(${rgbAverageColor.join(',')})`,
-                  backgroundPosition: focalBackgroundPosition || 'center',
+                  // backgroundColor:
+                  //   rgbAverageColor && `rgb(${rgbAverageColor.join(',')})`,
+                  // backgroundPosition: focalBackgroundPosition || 'center',
                   // Duration based on width or height in pixels
+                  objectPosition: focalPosition || 'center',
                   // 100px per second (rough estimate)
                   // Clamp between 5s and 120s
                   '--anim-duration': `${Math.min(
@@ -294,12 +303,12 @@ function Media({
                   )}s`,
                 }}
                 onLoad={(e) => {
-                  e.target.closest('.media-image').style.backgroundImage = '';
+                  // e.target.closest('.media-image').style.backgroundImage = '';
                   e.target.dataset.loaded = true;
                 }}
                 onError={(e) => {
                   const { src } = e.target;
-                  if (src === mediaURL) {
+                  if (src === mediaURL && mediaURL !== remoteMediaURL) {
                     e.target.src = remoteMediaURL;
                   }
                 }}
@@ -320,6 +329,7 @@ function Media({
     const formattedDuration = formatDuration(original.duration);
     const hoverAnimate = !showOriginal && !autoAnimate && isGIF;
     const autoGIFAnimate = !showOriginal && autoAnimate && isGIF;
+    const showProgress = original.duration > 5;
 
     const videoHTML = `
     <video
@@ -335,17 +345,24 @@ function Media({
       playsinline
       loop="${loopable}"
       ${isGIF ? 'ondblclick="this.paused ? this.play() : this.pause()"' : ''}
+      ${
+        isGIF && showProgress
+          ? "ontimeupdate=\"this.closest('.media-gif') && this.closest('.media-gif').style.setProperty('--progress', `${~~((this.currentTime / this.duration) * 100)}%`)\""
+          : ''
+      }
     ></video>
   `;
 
     return (
       <Figure>
         <Parent
-          class={`media media-${isGIF ? 'gif' : 'video'} ${
+          class={`media ${className} media-${isGIF ? 'gif' : 'video'} ${
             autoGIFAnimate ? 'media-contain' : ''
           }`}
           data-orientation={orientation}
-          data-formatted-duration={formattedDuration}
+          data-formatted-duration={
+            !showOriginal ? formattedDuration : undefined
+          }
           data-label={isGIF && !showOriginal && !autoGIFAnimate ? 'GIF' : ''}
           data-has-alt={!showInlineDesc}
           // style={{
@@ -421,6 +438,22 @@ function Media({
               playsinline
               loop
               muted
+              onTimeUpdate={
+                showProgress
+                  ? (e) => {
+                      const { target } = e;
+                      const container = target?.closest('.media-gif');
+                      if (container) {
+                        const percentage =
+                          (target.currentTime / target.duration) * 100;
+                        container.style.setProperty(
+                          '--progress',
+                          `${percentage}%`,
+                        );
+                      }
+                    }
+                  : undefined
+              }
             />
           ) : (
             <>
@@ -448,8 +481,10 @@ function Media({
     return (
       <Figure>
         <Parent
-          class="media media-audio"
-          data-formatted-duration={formattedDuration}
+          class={`media media-audio ${className}`}
+          data-formatted-duration={
+            !showOriginal ? formattedDuration : undefined
+          }
           data-has-alt={!showInlineDesc}
           onClick={onClick}
           style={!showOriginal && mediaStyles}

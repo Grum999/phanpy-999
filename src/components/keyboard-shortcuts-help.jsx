@@ -30,24 +30,10 @@ export default memo(function KeyboardShortcutsHelp() {
     },
   );
 
-  const escRef = useHotkeys('esc', onClose, []);
-
   return (
     !!snapStates.showKeyboardShortcutsHelp && (
-      <Modal
-        class="light"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            onClose();
-          }
-        }}
-      >
-        <div
-          id="keyboard-shortcuts-help-container"
-          class="sheet"
-          tabindex="-1"
-          ref={escRef}
-        >
+      <Modal class="light" onClose={onClose}>
+        <div id="keyboard-shortcuts-help-container" class="sheet" tabindex="-1">
           <button type="button" class="sheet-close" onClick={onClose}>
             <Icon icon="x" />
           </button>
@@ -94,7 +80,13 @@ export default memo(function KeyboardShortcutsHelp() {
                   ),
                 },
                 {
-                  action: 'Toggle expanded/collapsed thread',
+                  action: (
+                    <>
+                      Expand content warning or
+                      <br />
+                      toggle expanded/collapsed thread
+                    </>
+                  ),
                   keys: <kbd>x</kbd>,
                 },
                 {
@@ -118,6 +110,15 @@ export default memo(function KeyboardShortcutsHelp() {
                   keys: <kbd>c</kbd>,
                 },
                 {
+                  action: 'Compose new post (new window)',
+                  className: 'insignificant',
+                  keys: (
+                    <>
+                      <kbd>Shift</kbd> + <kbd>c</kbd>
+                    </>
+                  ),
+                },
+                {
                   action: 'Send post',
                   keys: (
                     <>
@@ -133,6 +134,15 @@ export default memo(function KeyboardShortcutsHelp() {
                 {
                   action: 'Reply',
                   keys: <kbd>r</kbd>,
+                },
+                {
+                  action: 'Reply (new window)',
+                  className: 'insignificant',
+                  keys: (
+                    <>
+                      <kbd>Shift</kbd> + <kbd>r</kbd>
+                    </>
+                  ),
                 },
                 {
                   action: 'Like (favourite)',
@@ -154,9 +164,17 @@ export default memo(function KeyboardShortcutsHelp() {
                   action: 'Bookmark',
                   keys: <kbd>d</kbd>,
                 },
-              ].map(({ action, keys }) => (
+                {
+                  action: 'Toggle Cloak mode',
+                  keys: (
+                    <>
+                      <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>k</kbd>
+                    </>
+                  ),
+                },
+              ].map(({ action, className, keys }) => (
                 <tr key={action}>
-                  <th>{action}</th>
+                  <th class={className}>{action}</th>
                   <td>{keys}</td>
                 </tr>
               ))}

@@ -3,6 +3,7 @@ import { subscribeKey } from 'valtio/utils';
 
 import { api } from './api';
 import pmem from './pmem';
+import rateLimit from './ratelimit';
 import store from './store';
 
 const states = proxy({
@@ -22,16 +23,17 @@ const states = proxy({
   notificationsNew: [],
   notificationsShowNew: false,
   notificationsLastFetchTime: null,
-  accounts: {},
   reloadStatusPage: 0,
   reloadGenericAccounts: {
     id: null,
     counter: 0,
   },
   spoilers: {},
+  spoilersMedia: {},
   scrollPositions: {},
   unfurledLinks: {},
   statusQuotes: {},
+  statusFollowedTags: {},
   accounts: {},
   routeNotification: null,
   // Modals
@@ -57,6 +59,7 @@ const states = proxy({
     contentTranslationTargetLanguage: null,
     contentTranslationHideLanguages: [],
     contentTranslationAutoInline: false,
+    mediaAltGenerator: false,
     cloakMode: false,
   },
 });
@@ -72,8 +75,9 @@ export function initStates() {
     store.account.get('settings-autoRefresh') ?? false;
   states.settings.shortcutsViewMode =
     store.account.get('settings-shortcutsViewMode') ?? null;
-  states.settings.shortcutsColumnsMode =
-    store.account.get('settings-shortcutsColumnsMode') ?? false;
+  if (store.account.get('settings-shortcutsColumnsMode')) {
+    states.settings.shortcutsColumnsMode = true;
+  }
   states.settings.boostsCarousel =
     store.account.get('settings-boostsCarousel') ?? true;
   states.settings.contentTranslation =
@@ -84,6 +88,8 @@ export function initStates() {
     store.account.get('settings-contentTranslationHideLanguages') || [];
   states.settings.contentTranslationAutoInline =
     store.account.get('settings-contentTranslationAutoInline') ?? false;
+  states.settings.mediaAltGenerator =
+    store.account.get('settings-mediaAltGenerator') ?? false;
   states.settings.cloakMode = store.account.get('settings-cloakMode') ?? false;
 }
 
@@ -99,9 +105,6 @@ subscribe(states, (changes) => {
     }
     if (path.join('.') === 'settings.boostsCarousel') {
       store.account.set('settings-boostsCarousel', !!value);
-    }
-    if (path.join('.') === 'settings.shortcutsColumnsMode') {
-      store.account.set('settings-shortcutsColumnsMode', !!value);
     }
     if (path.join('.') === 'settings.shortcutsViewMode') {
       store.account.set('settings-shortcutsViewMode', value);
@@ -121,6 +124,9 @@ subscribe(states, (changes) => {
         'settings-contentTranslationHideLanguages',
         states.settings.contentTranslationHideLanguages,
       );
+    }
+    if (path.join('.') === 'settings.mediaAltGenerator') {
+      store.account.set('settings-mediaAltGenerator', !!value);
     }
     if (path?.[0] === 'shortcuts') {
       store.account.set('shortcuts', states.shortcuts);
@@ -171,7 +177,7 @@ export function saveStatus(status, instance, opts) {
   if (!override && oldStatus) return;
   const key = statusKey(status.id, instance);
   if (oldStatus?._pinned) status._pinned = oldStatus._pinned;
-  if (oldStatus?._filtered) status._filtered = oldStatus._filtered;
+  // if (oldStatus?._filtered) status._filtered = oldStatus._filtered;
   states.statuses[key] = status;
   if (status.reblog) {
     const key = statusKey(status.reblog.id, instance);
@@ -180,7 +186,7 @@ export function saveStatus(status, instance, opts) {
 
   // THREAD TRAVERSER
   if (!skipThreading) {
-    requestAnimationFrame(() => {
+    queueMicrotask(() => {
       threadifyStatus(status, instance);
       if (status.reblog) {
         threadifyStatus(status.reblog, instance);
@@ -189,7 +195,7 @@ export function saveStatus(status, instance, opts) {
   }
 }
 
-export function threadifyStatus(status, propInstance) {
+function _threadifyStatus(status, propInstance) {
   const { masto, instance } = api({ instance: propInstance });
   // Return all statuses in the thread, via inReplyToId, if inReplyToAccountId === account.id
   let fetchIndex = 0;
@@ -228,6 +234,7 @@ export function threadifyStatus(status, propInstance) {
       console.error(e, status);
     });
 }
+export const threadifyStatus = rateLimit(_threadifyStatus, 100);
 
 const fetchStatus = pmem((statusID, masto) => {
   return masto.v1.statuses.$select(statusID).fetch();

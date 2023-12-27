@@ -5,6 +5,95 @@
   overflow-y: auto;
   max-width: 100%;
   --banner-overlap: 44px;
+  --posting-stats-size: 8px;
+  --original-color: var(--link-color);
+
+  .note {
+    font-size: 95%;
+    line-height: 1.4;
+    text-wrap: pretty;
+    margin-bottom: 16px;
+
+    > *:first-child {
+      margin-top: 0;
+      padding-top: 0;
+    }
+    > *:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    &:not(:has(p)):not(:empty) {
+      /* Some notes don't have <p> tags, so we need to add some padding */
+      padding: 1em 0;
+    }
+  }
+
+  .posting-stats {
+    font-size: 90%;
+    color: var(--text-insignificant-color);
+    background-color: var(--bg-faded-color);
+    padding: 8px 12px;
+
+    &:is(:hover, :focus-within) {
+      background-color: var(--link-bg-hover-color);
+    }
+  }
+
+  .posting-stats-bar {
+    --gap: 0.5px;
+    --gap-color: var(--outline-color);
+    height: var(--posting-stats-size);
+    border-radius: var(--posting-stats-size);
+    overflow: hidden;
+    margin: 8px 0;
+    box-shadow: inset 0 0 0 1px var(--outline-color),
+      inset 0 0 0 1.5px var(--bg-blur-color);
+    background-color: var(--bg-color);
+    background-repeat: no-repeat;
+    animation: swoosh-bg-image 0.3s ease-in-out 0.3s both;
+    background-image: linear-gradient(
+      to right,
+      var(--original-color) 0%,
+      var(--original-color) calc(var(--originals-percentage) - var(--gap)),
+      var(--gap-color) calc(var(--originals-percentage) - var(--gap)),
+      var(--gap-color) calc(var(--originals-percentage) + var(--gap)),
+      var(--reply-to-color) calc(var(--originals-percentage) + var(--gap)),
+      var(--reply-to-color) calc(var(--replies-percentage) - var(--gap)),
+      var(--gap-color) calc(var(--replies-percentage) - var(--gap)),
+      var(--gap-color) calc(var(--replies-percentage) + var(--gap)),
+      var(--reblog-color) calc(var(--replies-percentage) + var(--gap)),
+      var(--reblog-color) 100%
+    );
+  }
+
+  .posting-stats-legends {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .posting-stats-legend-item {
+    display: inline-block;
+    width: var(--posting-stats-size);
+    height: var(--posting-stats-size);
+    border-radius: var(--posting-stats-size);
+    background-color: var(--text-insignificant-color);
+    vertical-align: middle;
+    margin: 0 4px 2px;
+    /* border: 1px solid var(--outline-color); */
+    box-shadow: inset 0 0 0 1px var(--outline-color),
+      inset 0 0 0 1.5px var(--bg-blur-color);
+
+    &.posting-stats-legend-item-originals {
+      background-color: var(--original-color);
+    }
+    &.posting-stats-legend-item-replies {
+      background-color: var(--reply-to-color);
+    }
+    &.posting-stats-legend-item-boosts {
+      background-color: var(--reblog-color);
+    }
+  }
 }
 
 .account-container.skeleton {
@@ -17,7 +106,7 @@
   position: absolute;
   top: 8px;
   inset-inline: 8px;
-  z-index: 2;
+  z-index: 3;
   border: 1px solid var(--outline-color);
   border-radius: calc(16px - 8px);
   overflow: hidden;
@@ -45,7 +134,7 @@
 
   ~ * {
     /* pointer-events: none; */
-    filter: grayscale(0.75) brightness(0.75);
+    filter: grayscale(0.75) opacity(0.75);
   }
 }
 
@@ -141,6 +230,7 @@
 }
 
 .account-container .account-block .account-block-acct {
+  display: block;
   opacity: 0.7;
 }
 
@@ -213,15 +303,6 @@
     margin: 0;
     padding: 0;
   }
-}
-
-.account-container .note {
-  font-size: 95%;
-  line-height: 1.4;
-}
-.account-container .note:not(:has(p)):not(:empty) {
-  /* Some notes don't have <p> tags, so we need to add some padding */
-  padding: 1em 0;
 }
 
 .account-container .stats {
@@ -370,9 +451,10 @@
 
 .timeline-start .account-container {
   border-bottom: 1px solid var(--outline-color);
+  position: relative;
 }
 .timeline-start .account-container header {
-  padding: 16px 16px 1px;
+  padding: 16px;
   animation: none;
 }
 .timeline-start .account-container main {
@@ -386,18 +468,46 @@
   display: none;
 }
 
+@keyframes bye-banner {
+  20% {
+    filter: blur(0) opacity(1);
+  }
+  100% {
+    filter: blur(16px) opacity(0.2);
+  }
+}
+@keyframes surface-header {
+  0% {
+    border-bottom-color: transparent;
+    box-shadow: none;
+  }
+  100% {
+    border-bottom-color: var(--outline-color);
+    box-shadow: 0 8px 16px -8px var(--drop-shadow-color);
+  }
+}
+@keyframes shrink-avatar {
+  0% {
+    width: 64px;
+    height: 64px;
+  }
+  100% {
+    width: 2.5em;
+    height: 2.5em;
+  }
+}
 .sheet .account-container {
   border-radius: 16px 16px 0 0;
   overflow-x: hidden;
   max-height: 75vh;
   overscroll-behavior: none;
+  scroll-timeline: --account-scroll;
 
   header {
     padding-bottom: 16px;
     position: sticky;
     top: 0;
     z-index: 2;
-    /* --bg-color: red; */
     background-image: linear-gradient(
       to bottom,
       transparent 30%,
@@ -405,6 +515,14 @@
       var(--bg-color) calc(100% - 8px),
       transparent
     );
+
+    .account-block-content {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-clamp: 3;
+      -webkit-line-clamp: 3;
+    }
   }
 
   .faux-header-bg {
@@ -417,8 +535,34 @@
     margin-top: calc(-1 * var(--banner-overlap));
   }
 
+  @supports (animation-timeline: scroll()) {
+    .header-banner:not(.header-is-avatar):not(:hover):not(:active) {
+      animation: bye-banner 1s linear both;
+      animation-timeline: view();
+      animation-range: contain 100% cover 100%;
+    }
+
+    header {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 30%,
+        var(--bg-color) var(--banner-overlap)
+      );
+      border-bottom: 1px solid transparent;
+      animation: surface-header 1s linear both;
+      animation-timeline: --account-scroll;
+      animation-range: 0 150px;
+    }
+
+    header .avatar {
+      animation: shrink-avatar 1s linear both;
+      animation-timeline: --account-scroll;
+      animation-range: 0 150px;
+    }
+  }
+
   main {
-    margin-top: -8px;
+    /* margin-top: -8px; */
     padding-top: 1px;
     padding-bottom: 16px;
   }

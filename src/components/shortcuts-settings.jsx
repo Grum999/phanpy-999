@@ -13,6 +13,7 @@ import multiColumnUrl from '../assets/multi-column.svg';
 import tabMenuBarUrl from '../assets/tab-menu-bar.svg';
 
 import { api } from '../utils/api';
+import { fetchFollowedTags } from '../utils/followed-tags';
 import pmem from '../utils/pmem';
 import showToast from '../utils/show-toast';
 import states from '../utils/states';
@@ -22,7 +23,7 @@ import Icon from './icon';
 import MenuConfirm from './menu-confirm';
 import Modal from './modal';
 
-const SHORTCUTS_LIMIT = 9;
+export const SHORTCUTS_LIMIT = 9;
 
 const TYPES = [
   'following',
@@ -31,12 +32,12 @@ const TYPES = [
   'list',
   'public',
   'trending',
-  // NOTE: Hide for now
-  // 'search', // Search on Mastodon ain't great
-  // 'account-statuses', // Need @acct search first
+  'search',
   'hashtag',
   'bookmarks',
   'favourites',
+  // NOTE: Hide for now
+  // 'account-statuses', // Need @acct search first
 ];
 const TYPE_TEXT = {
   following: 'Home / Following',
@@ -86,6 +87,8 @@ const TYPE_PARAMS = {
       text: 'Search term',
       name: 'query',
       type: 'text',
+      placeholder: 'Optional, unless for multi-column mode',
+      notRequired: true,
     },
   ],
   'account-statuses': [
@@ -105,6 +108,11 @@ const TYPE_PARAMS = {
       pattern: '[^#]+',
     },
     {
+      text: 'Media only',
+      name: 'media',
+      type: 'checkbox',
+    },
+    {
       text: 'Instance',
       name: 'instance',
       type: 'text',
@@ -113,6 +121,14 @@ const TYPE_PARAMS = {
     },
   ],
 };
+const fetchListTitle = pmem(async ({ id }) => {
+  const list = await api().masto.v1.lists.$select(id).fetch();
+  return list.title;
+});
+const fetchAccountTitle = pmem(async ({ id }) => {
+  const account = await api().masto.v1.accounts.$select(id).fetch();
+  return account.username || account.acct || account.displayName;
+});
 export const SHORTCUTS_META = {
   following: {
     id: 'home',
@@ -134,10 +150,7 @@ export const SHORTCUTS_META = {
   },
   list: {
     id: 'list',
-    title: pmem(async ({ id }) => {
-      const list = await api().masto.v1.lists.$select(id).fetch();
-      return list.title;
-    }),
+    title: fetchListTitle,
     path: ({ id }) => `/l/${id}`,
     icon: 'list',
   },
@@ -157,16 +170,15 @@ export const SHORTCUTS_META = {
   },
   search: {
     id: 'search',
-    title: ({ query }) => query,
-    path: ({ query }) => `/search?q=${query}`,
+    title: ({ query }) => (query ? `"${query}"` : 'Search'),
+    path: ({ query }) =>
+      query ? `/search?q=${query}&type=statuses` : '/search',
     icon: 'search',
+    excludeViewMode: ({ query }) => (!query ? ['multi-column'] : []),
   },
   'account-statuses': {
     id: 'account-statuses',
-    title: pmem(async ({ id }) => {
-      const account = await api().masto.v1.accounts.$select(id).fetch();
-      return account.username || account.acct || account.displayName;
-    }),
+    title: fetchAccountTitle,
     path: ({ id }) => `/a/${id}`,
     icon: 'user',
   },
@@ -186,50 +198,21 @@ export const SHORTCUTS_META = {
     id: 'hashtag',
     title: ({ hashtag }) => hashtag,
     subtitle: ({ instance }) => instance || api().instance,
-    path: ({ hashtag, instance }) =>
-      `${instance ? `/${instance}` : ''}/t/${hashtag.split(/\s+/).join('+')}`,
+    path: ({ hashtag, instance, media }) =>
+      `${instance ? `/${instance}` : ''}/t/${hashtag.split(/\s+/).join('+')}${
+        media ? '?media=1' : ''
+      }`,
     icon: 'hashtag',
   },
 };
 
 function ShortcutsSettings({ onClose }) {
   const snapStates = useSnapshot(states);
-  const { masto } = api();
   const { shortcuts } = snapStates;
-
-  const [lists, setLists] = useState([]);
-  const [followedHashtags, setFollowedHashtags] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [showImportExport, setShowImportExport] = useState(false);
 
   const [shortcutsListParent] = useAutoAnimate();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const lists = await masto.v1.lists.list();
-        lists.sort((a, b) => a.title.localeCompare(b.title));
-        setLists(lists);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-
-    (async () => {
-      try {
-        const iterator = masto.v1.followedTags.list();
-        const tags = [];
-        do {
-          const { value, done } = await iterator.next();
-          if (done || value?.length === 0) break;
-          tags.push(...value);
-        } while (true);
-        setFollowedHashtags(tags);
-      } catch (e) {
-        console.error(e);
-      }
-    })();
-  }, []);
 
   return (
     <div id="shortcuts-settings-container" class="sheet" tabindex="-1">
@@ -293,33 +276,6 @@ function ShortcutsSettings({ onClose }) {
             );
           })}
         </div>
-        {/* <select
-              value={snapStates.settings.shortcutsViewMode || 'float-button'}
-              onChange={(e) => {
-                states.settings.shortcutsViewMode = e.target.value;
-              }}
-            >
-              <option value="float-button">Floating button</option>
-              <option value="multi-column">Multi-column</option>
-              <option value="tab-menu-bar">Tab/Menu bar </option>
-            </select> */}
-        {/* <p>
-          <details>
-            <summary class="insignificant">
-              Experimental Multi-column mode
-            </summary>
-            <label>
-              <input
-                type="checkbox"
-                checked={snapStates.settings.shortcutsColumnsMode}
-                onChange={(e) => {
-                  states.settings.shortcutsColumnsMode = e.target.checked;
-                }}
-              />{' '}
-              Show shortcuts in multiple columns instead of the floating button.
-            </label>
-          </details>
-        </p> */}
         {shortcuts.length > 0 ? (
           <ol class="shortcuts-list" ref={shortcutsListParent}>
             {shortcuts.filter(Boolean).map((shortcut, i) => {
@@ -327,7 +283,8 @@ function ShortcutsSettings({ onClose }) {
               const key = Object.values(shortcut).join('-');
               const { type } = shortcut;
               if (!SHORTCUTS_META[type]) return null;
-              let { icon, title, subtitle } = SHORTCUTS_META[type];
+              let { icon, title, subtitle, excludeViewMode } =
+                SHORTCUTS_META[type];
               if (typeof title === 'function') {
                 title = title(shortcut, i);
               }
@@ -337,6 +294,12 @@ function ShortcutsSettings({ onClose }) {
               if (typeof icon === 'function') {
                 icon = icon(shortcut, i);
               }
+              if (typeof excludeViewMode === 'function') {
+                excludeViewMode = excludeViewMode(shortcut, i);
+              }
+              const excludedViewMode = excludeViewMode?.includes(
+                snapStates.settings.shortcutsViewMode,
+              );
               return (
                 <li key={key}>
                   <Icon icon={icon} />
@@ -347,6 +310,11 @@ function ShortcutsSettings({ onClose }) {
                         {' '}
                         <small class="ib insignificant">{subtitle}</small>
                       </>
+                    )}
+                    {excludedViewMode && (
+                      <span class="tag">
+                        Not available in current view mode
+                      </span>
                     )}
                   </span>
                   <span class="shortcut-actions">
@@ -474,8 +442,6 @@ function ShortcutsSettings({ onClose }) {
           <ShortcutForm
             shortcut={showForm.shortcut}
             shortcutIndex={showForm.shortcutIndex}
-            lists={lists}
-            followedHashtags={followedHashtags}
             onSubmit={({ result, mode }) => {
               console.log('onSubmit', result);
               if (mode === 'edit') {
@@ -507,9 +473,23 @@ function ShortcutsSettings({ onClose }) {
   );
 }
 
+const FETCH_MAX_AGE = 1000 * 60; // 1 minute
+const fetchLists = pmem(
+  () => {
+    const { masto } = api();
+    return masto.v1.lists.list();
+  },
+  {
+    maxAge: FETCH_MAX_AGE,
+  },
+);
+
+const FORM_NOTES = {
+  search: `For multi-column mode, search term is required, else the column will not be shown.`,
+  hashtag: 'Multiple hashtags are supported. Space-separated.',
+};
+
 function ShortcutForm({
-  lists,
-  followedHashtags,
   onSubmit,
   disabled,
   shortcut,
@@ -519,6 +499,36 @@ function ShortcutForm({
   console.log('shortcut', shortcut);
   const editMode = !!shortcut;
   const [currentType, setCurrentType] = useState(shortcut?.type || null);
+  const { masto } = api();
+
+  const [uiState, setUIState] = useState('default');
+  const [lists, setLists] = useState([]);
+  const [followedHashtags, setFollowedHashtags] = useState([]);
+  useEffect(() => {
+    (async () => {
+      if (currentType !== 'list') return;
+      try {
+        setUIState('loading');
+        const lists = await fetchLists();
+        lists.sort((a, b) => a.title.localeCompare(b.title));
+        setLists(lists);
+        setUIState('default');
+      } catch (e) {
+        console.error(e);
+        setUIState('error');
+      }
+    })();
+
+    (async () => {
+      if (currentType !== 'hashtag') return;
+      try {
+        const tags = await fetchFollowedTags();
+        setFollowedHashtags(tags);
+      } catch (e) {
+        console.error(e);
+      }
+    })();
+  }, [currentType]);
 
   const formRef = useRef();
   useEffect(() => {
@@ -608,7 +618,8 @@ function ShortcutForm({
                       <select
                         name="id"
                         required={!notRequired}
-                        disabled={disabled}
+                        disabled={disabled || uiState === 'loading'}
+                        defaultValue={editMode ? shortcut.id : undefined}
                       >
                         {lists.map((list) => (
                           <option value={list.id}>{list.title}</option>
@@ -625,6 +636,7 @@ function ShortcutForm({
                     <span>{text}</span>{' '}
                     <input
                       type={type}
+                      switch={type === 'checkbox' || undefined}
                       name={name}
                       placeholder={placeholder}
                       required={type === 'text' && !notRequired}
@@ -652,8 +664,18 @@ function ShortcutForm({
               );
             },
           )}
+          {!!FORM_NOTES[currentType] && (
+            <p class="form-note insignificant">
+              <Icon icon="info" />
+              {FORM_NOTES[currentType]}
+            </p>
+          )}
           <footer>
-            <button type="submit" class="block" disabled={disabled}>
+            <button
+              type="submit"
+              class="block"
+              disabled={disabled || uiState === 'loading'}
+            >
               {editMode ? 'Save' : 'Add'}
             </button>
             {editMode && (

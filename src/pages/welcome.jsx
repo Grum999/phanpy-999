@@ -12,6 +12,21 @@ import Link from '../components/link';
 import states from '../utils/states';
 import useTitle from '../utils/useTitle';
 
+const {
+  PHANPY_DEFAULT_INSTANCE: DEFAULT_INSTANCE,
+  PHANPY_WEBSITE: WEBSITE,
+  PHANPY_PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
+  PHANPY_DEFAULT_INSTANCE_REGISTRATION_URL: DEFAULT_INSTANCE_REGISTRATION_URL,
+} = import.meta.env;
+const appSite = WEBSITE
+  ? WEBSITE.replace(/https?:\/\//g, '').replace(/\/$/, '')
+  : null;
+const appVersion = __BUILD_TIME__
+  ? `${__BUILD_TIME__.slice(0, 10).replace(/-/g, '.')}${
+      __COMMIT_HASH__ ? `.${__COMMIT_HASH__}` : ''
+    }`
+  : null;
+
 function Welcome() {
   useTitle(null, ['/', '/welcome']);
   return (

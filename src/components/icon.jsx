@@ -1,5 +1,4 @@
-import { memo } from 'preact/compat';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 
 const SIZES = {
   s: 12,
@@ -28,6 +27,7 @@ export const ICONS = {
   'eye-open': () => import('@iconify-icons/mingcute/eye-2-line'),
   message: () => import('@iconify-icons/mingcute/mail-line'),
   comment: () => import('@iconify-icons/mingcute/chat-3-line'),
+  comment2: () => import('@iconify-icons/mingcute/comment-2-line'),
   home: () => import('@iconify-icons/mingcute/home-3-line'),
   notification: () => import('@iconify-icons/mingcute/notification-line'),
   follow: () => import('@iconify-icons/mingcute/user-follow-line'),
@@ -69,6 +69,7 @@ export const ICONS = {
   history: () => import('@iconify-icons/mingcute/history-line'),
   share: () => import('@iconify-icons/mingcute/share-2-line'),
   sparkles: () => import('@iconify-icons/mingcute/sparkles-line'),
+  sparkles2: () => import('@iconify-icons/mingcute/sparkles-2-line'),
   exit: () => import('@iconify-icons/mingcute/exit-line'),
   translate: () => import('@iconify-icons/mingcute/translate-line'),
   play: () => import('@iconify-icons/mingcute/play-fill'),
@@ -102,7 +103,11 @@ export const ICONS = {
   keyboard: () => import('@iconify-icons/mingcute/keyboard-line'),
   cloud: () => import('@iconify-icons/mingcute/cloud-line'),
   month: () => import('@iconify-icons/mingcute/calendar-month-line'),
+  media: () => import('@iconify-icons/mingcute/photo-album-line'),
+  speak: () => import('@iconify-icons/mingcute/radar-line'),
 };
+
+const ICONDATA = {};
 
 function Icon({
   icon,
@@ -121,11 +126,17 @@ function Icon({
     [iconBlock, rotate, flip] = iconBlock;
   }
 
-  const [iconData, setIconData] = useState(null);
-  useEffect(async () => {
-    const icon = await iconBlock();
-    setIconData(icon.default);
-  }, [iconBlock]);
+  const [iconData, setIconData] = useState(ICONDATA[icon]);
+  const currentIcon = useRef(icon);
+  useEffect(() => {
+    if (iconData && currentIcon.current === icon) return;
+    (async () => {
+      const iconB = await iconBlock();
+      setIconData(iconB.default);
+      ICONDATA[icon] = iconB.default;
+    })();
+    currentIcon.current = icon;
+  }, [icon]);
 
   return (
     <span
@@ -154,4 +165,4 @@ function Icon({
   );
 }
 
-export default memo(Icon);
+export default Icon;

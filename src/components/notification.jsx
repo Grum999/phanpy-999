@@ -1,3 +1,4 @@
+import { Fragment } from 'preact';
 import { memo } from 'preact/compat';
 
 import shortenNumber from '../utils/shorten-number';
@@ -66,7 +67,12 @@ const contentText = {
 
 const AVATARS_LIMIT = 50;
 
-function Notification({ notification, instance, isStatic }) {
+function Notification({
+  notification,
+  instance,
+  isStatic,
+  disableContextMenu,
+}) {
   const { id, status, account, report, _accounts, _statuses } = notification;
   let { type } = notification;
 
@@ -152,6 +158,7 @@ function Notification({ notification, instance, isStatic }) {
       heading: genericAccountsHeading,
       accounts: _accounts,
       showReactions: type === 'favourite+reblog',
+      excludeRelationshipAttrs: type === 'follow' ? ['followedBy'] : [],
     };
   };
 
@@ -221,9 +228,10 @@ function Notification({ notification, instance, isStatic }) {
         )}
         {_accounts?.length > 1 && (
           <p class="avatars-stack">
-            {_accounts.slice(0, AVATARS_LIMIT).map((account, i) => (
-              <>
+            {_accounts.slice(0, AVATARS_LIMIT).map((account) => (
+              <Fragment key={account.id}>
                 <a
+                  key={account.id}
                   href={account.url}
                   rel="noopener noreferrer"
                   class="account-avatar-stack"
@@ -261,7 +269,7 @@ function Notification({ notification, instance, isStatic }) {
                     </div>
                   )}
                 </a>{' '}
-              </>
+              </Fragment>
             ))}
             <button
               type="button"
@@ -298,20 +306,24 @@ function Notification({ notification, instance, isStatic }) {
                 ? `/${instance}/s/${actualStatusID}`
                 : `/s/${actualStatusID}`
             }
-            onContextMenu={(e) => {
-              const post = e.target.querySelector('.status');
-              if (post) {
-                // Fire a custom event to open the context menu
-                if (e.metaKey) return;
-                e.preventDefault();
-                post.dispatchEvent(
-                  new MouseEvent('contextmenu', {
-                    clientX: e.clientX,
-                    clientY: e.clientY,
-                  }),
-                );
-              }
-            }}
+            onContextMenu={
+              !disableContextMenu
+                ? (e) => {
+                    const post = e.target.querySelector('.status');
+                    if (post) {
+                      // Fire a custom event to open the context menu
+                      if (e.metaKey) return;
+                      e.preventDefault();
+                      post.dispatchEvent(
+                        new MouseEvent('contextmenu', {
+                          clientX: e.clientX,
+                          clientY: e.clientY,
+                        }),
+                      );
+                    }
+                  }
+                : undefined
+            }
           >
             {isStatic ? (
               <Status status={actualStatus} size="s" />

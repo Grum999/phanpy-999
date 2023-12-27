@@ -9,6 +9,7 @@ import List from '../pages/list';
 import Mentions from '../pages/mentions';
 import Notifications from '../pages/notifications';
 import Public from '../pages/public';
+import Search from '../pages/search';
 import Trending from '../pages/trending';
 import states from '../utils/states';
 import useTitle from '../utils/useTitle';
@@ -33,8 +34,11 @@ function Columns() {
       hashtag: Hashtag,
       mentions: Mentions,
       trending: Trending,
+      search: Search,
     }[type];
     if (!Component) return null;
+    // Don't show Search column with no query, for now
+    if (type === 'search' && !params.query) return null;
     return (
       <Component key={type + JSON.stringify(params)} {...params} columnMode />
     );
@@ -49,7 +53,24 @@ function Columns() {
     }
   });
 
-  return <div id="columns">{components}</div>;
+  return (
+    <div
+      id="columns"
+      onContextMenu={(e) => {
+        // If right-click on header, but not links or buttons
+        if (
+          e.target.closest('.deck > header') &&
+          !e.target.closest('a') &&
+          !e.target.closest('button')
+        ) {
+          e.preventDefault();
+          states.showShortcutsSettings = true;
+        }
+      }}
+    >
+      {components}
+    </div>
+  );
 }
 
 export default Columns;
