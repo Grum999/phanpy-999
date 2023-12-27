@@ -4,6 +4,13 @@
 }
 .status-group {
 }
+.status-followed-tags {
+  background: linear-gradient(
+    160deg,
+    var(--hashtag-faded-color),
+    transparent min(160px, 50%)
+  );
+}
 .status-reply-to {
 }
 :is(.status-reblog, .status-group) .status-reply-to {
@@ -42,6 +49,49 @@
   color: var(--group-color);
   margin-right: 4px;
   vertical-align: text-bottom;
+}
+.status-followed-tags {
+  .status-pre-meta {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+
+    .icon {
+      color: var(--hashtag-color);
+      margin-right: 4px;
+      vertical-align: text-bottom;
+    }
+    a {
+      color: var(--hashtag-text-color);
+      font-weight: bold;
+      font-size: 12px;
+      text-decoration-color: var(--hashtag-faded-color);
+      text-underline-offset: 2px;
+      text-decoration-thickness: 2px;
+      display: inline-block;
+      padding: 2px;
+      vertical-align: top;
+      text-transform: uppercase;
+      text-shadow: 0 1px var(--bg-color);
+
+      &:hover {
+        color: var(--text-color);
+        text-decoration-color: var(--hashtag-color);
+      }
+    }
+  }
+
+  .status-followed-tag-item {
+    color: var(--hashtag-text-color);
+    padding: 2px;
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-inline-end: 0.5em;
+  }
 }
 
 /* STATUS */
@@ -397,75 +447,144 @@
   padding-bottom: 10px;
 }
 
-.status .content-container.has-spoiler .spoiler {
+.status
+  .content-container.has-spoiler
+  :is(.spoiler-button, .spoiler-media-button):not([hidden]) {
   margin: 4px 0;
   font-size: 90%;
   border: 1px dashed var(--button-bg-color);
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
 }
-.status
-  .content-container.has-spoiler:not(.show-spoiler)
-  .spoiler
-  ~ *:not(.media-container, .card, .media-figure-multiple),
-.status
-  .content-container.has-spoiler:not(.show-spoiler)
-  .spoiler
-  ~ .card
-  .meta-container,
-.status
-  .content-container.has-spoiler:not(.show-spoiler)
-  .spoiler
-  ~ :is(.media-container, .media-figure-multiple)
-  figcaption {
-  filter: blur(5px) invert(0.5);
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
-  pointer-events: none;
-  user-select: none;
-  contain: layout;
-  transform: scale(0.97);
+.status .content-container.has-spoiler:not(.show-spoiler) .spoiler-button {
+  ~ *:not(
+      .content.truncated,
+      .media-container,
+      .card,
+      .media-figure-multiple,
+      .spoiler-media-button
+    ),
+  ~ .card .meta-container {
+    /* filter: blur(5px) invert(0.5);
+    image-rendering: crisp-edges;
+    image-rendering: pixelated; */
+    opacity: 0.2;
+    text-decoration-thickness: 1.5em;
+    text-decoration-line: line-through;
+    text-rendering: optimizeSpeed;
+    pointer-events: none;
+    user-select: none;
+    /* contain: layout; */
+    /* transform: scale(0.97);
+    transition: transform 0.1s ease-in-out; */
+
+    * {
+      text-decoration-color: inherit;
+      text-decoration-thickness: 1.5em;
+      text-decoration-line: line-through;
+      text-rendering: optimizeSpeed;
+    }
+
+    img {
+      filter: invert(0.5);
+      background-color: black;
+    }
+  }
+
+  ~ .content.truncated {
+    opacity: 1;
+
+    > * {
+      opacity: 0.2;
+      text-decoration-thickness: 1.5em;
+      text-decoration-line: line-through;
+      text-rendering: optimizeSpeed;
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+
+  /* ~ :is(.media-container, .media-figure-multiple) .media > *, */
+  ~ .card .card-image > img {
+    display: none;
+    /* filter: blur(32px);
+    opacity: 0;
+    image-rendering: crisp-edges;
+    image-rendering: pixelated;
+    animation: none !important; */
+  }
+}
+.status .content-container.has-spoiler:not(.show-media) .spoiler-media-button {
+  ~ :is(.media-container, .media-figure-multiple) figcaption {
+    /* filter: blur(5px) invert(0.5);
+    image-rendering: crisp-edges;
+    image-rendering: pixelated; */
+    opacity: 0.2;
+    color: inherit;
+    text-decoration-thickness: 1.5em;
+    text-decoration-line: line-through;
+    text-rendering: optimizeSpeed;
+    pointer-events: none;
+    user-select: none;
+    /* contain: layout; */
+    /* transform: scale(0.97);
+    transition: transform 0.1s ease-in-out; */
+
+    * {
+      text-decoration-thickness: 1.5em;
+      text-decoration-line: line-through;
+      text-rendering: optimizeSpeed;
+    }
+
+    img {
+      opacity: 0;
+    }
+  }
+
+  ~ :is(.media-container, .media-figure-multiple) .media {
+    background-image: radial-gradient(
+      circle at 50% 50%,
+      var(--average-color, var(--bg-faded-color)),
+      var(--bg-color) 20em
+    );
+
+    > *:not(.media-play, .alt-badge) {
+      /* display: none; */
+      /* filter: blur(32px); */
+      opacity: 0;
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      animation: none !important;
+    }
+  }
 }
 .status
-  .content-container.has-spoiler:not(.show-spoiler)
-  .spoiler
-  ~ :is(.media-container, .media-figure-multiple)
-  .media
-  > *,
-.status
-  .content-container.has-spoiler:not(.show-spoiler)
-  .spoiler
-  ~ .card
-  > img {
-  filter: blur(32px);
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
-  animation: none !important;
-}
-.status .content-container.show-spoiler .spoiler {
+  .content-container.show-spoiler
+  :is(.spoiler-button, .spoiler-media-button).spoiling {
   border-style: dotted;
 }
-/* .status
-  .content-container.show-spoiler
-  .spoiler
-  ~ *:not(.media-container, .card),
-.status .content-container.show-spoiler .spoiler ~ .card .meta-container {
-  filter: none !important;
-  transform: none;
-  pointer-events: auto;
-  user-select: auto;
-  text-rendering: auto;
-  image-rendering: auto;
+
+.status .content-container .spoiler-divider {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-insignificant-color);
+  text-transform: uppercase;
+  font-size: 0.8em;
+  margin-top: 0.25em;
+  margin-bottom: 1em;
+  padding-block: 0.25em;
+  border-bottom: 1px dashed var(--divider-color);
 }
-.status .content-container.show-spoiler .spoiler ~ .media-container .media > *,
-.status .content-container.show-spoiler .spoiler ~ .card > img {
-  filter: none;
-  image-rendering: auto;
-} */
-/* .status .content a:not(.mention):not(:has(span)) {
-  color: inherit;
-} */
+
+.status .content-comment-hint {
+  margin-top: 0.25em;
+  font-size: 90%;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
 
 .status.compact-thread .spoiler-badge {
   font-size: smaller;
@@ -483,7 +602,7 @@
 .timeline-deck .status .content {
   max-height: 50vh;
   max-height: 50dvh;
-  overflow: hidden;
+  overflow: clip;
   position: relative;
 }
 .timeline-deck
@@ -541,6 +660,7 @@
   margin-block: min(0.75em, 12px);
   white-space: pre-wrap;
   tab-size: 2;
+  text-wrap: pretty;
 }
 .status .content p:first-child {
   margin-block-start: 0;
@@ -613,6 +733,36 @@
   /* min-height: 0 !important; */
   max-height: none !important;
 }
+.status-carousel .status .media-container:not(.status-card .media-container) {
+  margin-inline: -16px;
+  max-width: calc(100% + 16px + 16px) !important;
+
+  figure:before {
+    content: '';
+    display: block;
+    /* padding (16px) - gap (4px) */
+    flex-basis: calc(16px - 4px);
+  }
+
+  figure figcaption {
+    padding-inline: 16px !important;
+  }
+
+  &:not(.media-figure-multiple .media-container) {
+    margin-bottom: -16px;
+
+    &.media-eq1:not(:has(figure)) {
+      text-align: center;
+      background-color: var(--img-bg-color);
+    }
+  }
+
+  .media {
+    --media-radius: 0;
+    --media-radius-inner: 0;
+    box-sizing: border-box;
+  }
+}
 .status:not(.large):not(.status-carousel .status)
   .media-container.media-eq1:has([data-orientation='portrait']) {
   width: 85%;
@@ -622,6 +772,28 @@
 .status .media-container.media-gt2 {
   /* height: 200px; */
   max-height: max(200px, 40vh);
+}
+.status.medium
+  .content
+  ~ *
+  .media-container:not(.status-card .media-container):is(
+    .media-eq2,
+    .media-gt2
+  ),
+.status.medium
+  .content
+  ~ .media-container:not(.status-card .media-container):is(
+    .media-eq2,
+    .media-gt2
+  ) {
+  /* 50px = avatar size */
+  margin-left: calc(-1 * ((50px / 2)));
+  /*
+    outer padding = 16px
+    gap = 12px
+    so... 16 - 12 = 4
+  */
+  margin-right: -4px;
 }
 .status.large :is(.media-container, .media-container.media-gt2) {
   height: auto;
@@ -637,6 +809,12 @@
   overflow: hidden;
   min-height: 80px;
   border: var(--media-border-width) solid var(--outline-color);
+  vertical-align: top;
+
+  &:not(.media-audio) {
+    background-color: var(--average-color, var(--bg-faded-color));
+    background-clip: padding-box;
+  }
 }
 .status .media-container:not(.media-eq1) .media {
   aspect-ratio: auto !important;
@@ -664,6 +842,7 @@
       white-space: pre-line;
       flex-basis: 15em;
       flex-grow: 1;
+      text-wrap: pretty;
     }
   }
 
@@ -784,7 +963,7 @@
   object-fit: cover;
   vertical-align: middle;
 }
-.status .media {
+:is(.status, .media-post) .media {
   cursor: pointer;
 
   &[data-has-alt] {
@@ -821,7 +1000,7 @@ body:has(#modal-container .carousel) .status .media img:hover {
   position: relative;
   background-clip: padding-box;
 }
-.status :is(.media-video, .media-audio) .media-play {
+:is(.status, .media-post) :is(.media-video, .media-audio) .media-play {
   pointer-events: none;
   width: 44px;
   height: 44px;
@@ -836,10 +1015,13 @@ body:has(#modal-container .carousel) .status .media img:hover {
   place-items: center;
   border-radius: 70px;
 }
-.status :is(.media-video, .media-audio):hover:not(:active) .media-play {
+:is(.status, .media-post)
+  :is(.media-video, .media-audio):hover:not(:active)
+  .media-play {
   transform: translate(-50%, -50%) scale(1.1);
 }
-.status :is(.media-video, .media-audio)[data-formatted-duration]:after {
+:is(.status, .media-post)
+  :is(.media-video, .media-audio)[data-formatted-duration]:after {
   font-size: 12px;
   pointer-events: none;
   content: attr(data-formatted-duration);
@@ -852,10 +1034,10 @@ body:has(#modal-container .carousel) .status .media img:hover {
   border-radius: 4px;
   padding: 0 4px;
 }
-.status .media-audio[data-formatted-duration]:after {
+:is(.status, .media-post) .media-audio[data-formatted-duration]:after {
   content: '♬ ' attr(data-formatted-duration);
 }
-.status .media-gif[data-label]:not(:hover):after {
+:is(.status, .media-post) .media-gif[data-label]:not(:hover):after {
   font-size: 12px;
   font-weight: bold;
   pointer-events: none;
@@ -868,6 +1050,28 @@ body:has(#modal-container .carousel) .status .media img:hover {
   border: var(--hairline-width) solid var(--media-outline-color);
   border-radius: 4px;
   padding: 0 4px;
+}
+.media-gif {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: auto !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--media-outline-color);
+    transform: translateX(calc(var(--progress, 0%) - 100%));
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-right: 1px solid var(--media-fg-color) !important;
+    transition: transform 0.15s linear;
+  }
+  &:before {
+    height: 3px;
+  }
 }
 .status .media-gif video {
   object-fit: cover;
@@ -887,12 +1091,13 @@ body:has(#modal-container .carousel) .status .media img:hover {
 .status .media-audio audio {
   width: 100%;
 } */
-.status .media-audio {
+:is(.status, .media-post) .media-audio {
   width: 100%;
   height: 100%;
+  min-height: 88px;
   background-image: radial-gradient(
       circle at center center,
-      var(--bg-color),
+      transparent,
       var(--bg-faded-color)
     ),
     repeating-radial-gradient(
@@ -1010,7 +1215,6 @@ body:has(#modal-container .carousel) .status .media img:hover {
   font-size: 90%;
   z-index: 1;
   text-shadow: 0 var(--hairline-width) var(--bg-color);
-  mix-blend-mode: luminosity;
   white-space: pre-line;
 
   &:is(:hover, :focus) {
@@ -1070,6 +1274,8 @@ body:has(#modal-container .carousel) .status .media img:hover {
   width: 35%;
   position: relative;
   border-inline-end: 1px solid var(--outline-color);
+  background-color: var(--average-color, var(--bg-faded-color));
+  background-clip: padding-box;
 }
 .card .card-image img {
   position: absolute;
@@ -1131,6 +1337,7 @@ a:focus-visible .card img {
   box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
+  text-wrap: balance;
 }
 .card .meta {
   font-size: smaller;

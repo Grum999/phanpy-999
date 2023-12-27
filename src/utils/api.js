@@ -4,6 +4,7 @@ import store from './store';
 import {
   getAccount,
   getAccountByAccessToken,
+  getAccountByInstance,
   getCurrentAccount,
   saveAccount,
 } from './store-utils';
@@ -221,8 +222,50 @@ export function api({ instance, accessToken, accountID, account } = {}) {
     }
   }
 
+  const currentAccount = getCurrentAccount();
+
   // If only instance is provided, get the masto instance for that instance
   if (instance) {
+    if (currentAccountApi?.instance === instance) {
+      return {
+        masto: currentAccountApi.masto,
+        streaming: currentAccountApi.streaming,
+        client: currentAccountApi,
+        authenticated: true,
+        instance,
+      };
+    }
+
+    if (currentAccount?.instanceURL === instance) {
+      const { accessToken } = currentAccount;
+      currentAccountApi =
+        accountApis[instance]?.[accessToken] ||
+        initClient({ instance, accessToken });
+      return {
+        masto: currentAccountApi.masto,
+        streaming: currentAccountApi.streaming,
+        client: currentAccountApi,
+        authenticated: true,
+        instance,
+      };
+    }
+
+    const instanceAccount = getAccountByInstance(instance);
+    if (instanceAccount) {
+      const accessToken = instanceAccount.accessToken;
+      const client =
+        accountApis[instance]?.[accessToken] ||
+        initClient({ instance, accessToken });
+      const { masto, streaming } = client;
+      return {
+        masto,
+        streaming,
+        client,
+        authenticated: true,
+        instance,
+      };
+    }
+
     const client = apis[instance] || initClient({ instance });
     const { masto, streaming, accessToken } = client;
     return {
@@ -244,7 +287,6 @@ export function api({ instance, accessToken, accountID, account } = {}) {
       instance: currentAccountApi.instance,
     };
   }
-  const currentAccount = getCurrentAccount();
   if (currentAccount) {
     const { accessToken, instanceURL: instance } = currentAccount;
     currentAccountApi =

@@ -27,6 +27,6 @@ dist-ssr
 .env.dev
 src/data/instances-full.json
 phanpy-dist.zip
-
+phanpy-dist.tar.gz
 # G999
 *.kate-swp
