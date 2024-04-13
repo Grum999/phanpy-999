@@ -8,7 +8,9 @@
   --sai-left: env(safe-area-inset-left);
 
   --text-size: 16px;
-  --main-width: 40em;
+  /* G999 --> */
+  --main-width: 75vw;
+  /* <-- G999 */
   text-size-adjust: none;
   --hairline-width: 1px;
   --monospace-font: ui-monospace, 'SFMono-Regular', Consolas, 'Liberation Mono',

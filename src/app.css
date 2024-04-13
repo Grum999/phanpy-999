@@ -150,10 +150,13 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   user-select: none;
 }
 .deck > header .header-grid {
-  background-color: var(--bg-color);
-  /* background-color: var(--bg-blur-color);
+  background-color: var(--bg-blur-color);
+  /* G999
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
-  backdrop-filter: saturate(180%) blur(20px); */
+  G999 */
+  /* G999 --> */
+  backdrop-filter: saturate(180%) blur(2px);
+  /* <-- G999 */
   border-bottom: var(--hairline-width) solid var(--divider-color);
   min-height: 3em;
   display: grid;
@@ -203,6 +206,13 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   padding-bottom: 80vh !important;
   padding-bottom: 80dvh !important;
 }
+
+/* G999 --> */
+.deck > header .header-grid .header-side {
+    height: 4em;
+    padding: 0 0.25rem;
+}
+/* <-- G999 */
 
 @keyframes indeterminate-bar {
   0% {
@@ -367,7 +377,9 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
     transparent
   );
   background-repeat: no-repeat;
+  /* G999
   transition: opacity 0.3s ease-in-out;
+  G999 */
 }
 .timeline.contextual > li:first-child {
   background-position: 0 calc(16px + var(--avatar-size));
@@ -833,7 +845,9 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 
 .timeline-header {
+  /* G999
   padding: 0 16px;
+  G999 */
   opacity: 0.75;
 }
 
@@ -980,11 +994,13 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 
 .status-carousel {
   --carousel-faded-color: var(--bg-faded-color);
+  /* G999
   background: linear-gradient(
     to bottom right,
     var(--carousel-faded-color),
     transparent
   );
+  G999 */
   position: relative;
   container-type: inline-size;
 }
@@ -993,12 +1009,14 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* G999
   background-image: radial-gradient(
       ellipse 50% 32px at bottom center,
       var(--carousel-faded-color),
       transparent
     ),
     linear-gradient(to top, var(--bg-color) 8px, transparent 64px);
+  G999 */
   background-repeat: no-repeat;
   background-position: bottom center;
 }
@@ -1107,7 +1125,9 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 }
 
 .ui-state {
-  padding: 16px;
+  /* G999 --> */
+  padding: 0.25rem 0;
+  /* <-- G999 */
   text-align: center;
 
   .icon {
@@ -1126,16 +1146,22 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   animation: appear 0.2s ease-out;
   border: 1px solid var(--outline-color);
   background-color: var(--bg-blur-color);
-  border-radius: 16px;
+  /* G999 --> */
+  border-radius: 0.5rem;
+  /* <-- G999 */
   overflow: clip;
   box-shadow: 0 1px var(--bg-color);
 
   &:has(.status-badge:not(:empty)) {
-    border-top-right-radius: 8px;
+    /* G999 --> */
+    border-top-right-radius: 0.5rem;
+  /* <-- G999 */
   }
 
   .status-carousel.boosts-carousel & {
-    border-top-left-radius: 8px;
+    /* G999 --> */
+    border-top-left-radius: 0.5rem;
+  /* <-- G999 */
   }
 }
 .status-carousel-link::focus {
@@ -1159,7 +1185,9 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   z-index: 1000;
   display: flex;
   background-color: var(--backdrop-color);
+  /* G999
   animation: appear 0.1s ease-out;
+  G999 */
 }
 .deck-backdrop > a {
   flex-grow: 1;
@@ -1177,11 +1205,15 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   width: var(--main-width);
   max-width: 100vw;
   background-color: var(--bg-color);
+  /* G999
   box-shadow: -1px 0 var(--bg-color);
+  G999 */
 }
+/* G999
 .deck-backdrop .deck.slide-in:not(.deck-view-full) {
   animation: slide-in 0.5s var(--timing-function);
 }
+G999 */
 .deck-backdrop .deck .status {
   max-width: var(--main-width);
 }
@@ -1245,14 +1277,22 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
 .updates-button {
   position: absolute;
   z-index: 2;
-  top: 3em;
+  /* G999 --> */
+  top: 3.5em;
+  /* <-- G999 */
+  /* G999
   animation: fade-from-top 0.3s var(--timing-function);
+  G999 */
   left: 50%;
+  /* G999
   margin-top: 16px;
+  G999 */
   transform: translate(-50%, 0);
   font-size: 90%;
   pointer-events: auto;
+  /* G999
   transition: all 0.3s ease-in-out;
+  G999 */
 
   header[hidden] & {
     opacity: 0;
@@ -1288,8 +1328,10 @@ a[href^='http'][rel*='nofollow']:visited:not(:has(div)) {
   width: 70%;
   flex-grow: 1;
   background-color: var(--backdrop-solid-color);
+  /* G999
   animation: appear 0.1s var(--timing-function) both;
   transition: width 0.3s var(--timing-function);
+  G999 */
 
   &:only-child {
     width: 100%;
@@ -1398,8 +1440,10 @@ button.carousel-dot {
   color: var(--text-color);
   background-color: var(--bg-faded-blur-color);
   border: 1px solid var(--outline-color);
+  /* G999
   box-shadow: 0 4px 32px var(--drop-shadow-color);
   transition: all 0.2s ease-out;
+  G999 */
 }
 button.carousel-dot {
   background-color: transparent;
@@ -1422,7 +1466,9 @@ button.carousel-dot {
   border-radius: 999px;
   background-color: var(--bg-faded-blur-color);
   border: 1px solid var(--outline-color);
+  /* G999
   box-shadow: 0 4px 32px var(--drop-shadow-color);
+  G999 */
   /* backdrop-filter: blur(12px) invert(0.25); */
   transition: background-color 0.2s ease-out;
   &:hover {
@@ -1438,7 +1484,9 @@ button.carousel-dot {
   pointer-events: none;
 } */
 button.carousel-dot .icon {
+  /* G999
   transition: all 0.2s;
+  G999 */
   transform: scale(0.5);
 }
 button.carousel-dot:not(.active) .icon {
@@ -1457,7 +1505,9 @@ button.carousel-dot:is(.active, [disabled].active) .icon {
 @media (hover: hover) {
   .carousel-top-controls {
     transform: translateY(-100%);
+    /* G999
     transition: transform 0.2s ease-in-out;
+    G999 */
   }
   .carousel-controls {
     transform: scale(0);
@@ -1513,10 +1563,12 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   .media-post-link .button-label {
     display: inline;
   }
+  /* G999
   #modal-container > div,
   .status-deck {
     transition: all 0.3s ease-in-out;
   }
+  G999 */
   /* Don't do this if there's a modal sheet (.sheet) */
   :has(#modal-container .carousel):has(.status-deck):not(
       :has(.sheet, #compose-container)
@@ -1548,9 +1600,11 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
     pointer-events: auto;
     user-select: auto;
   }
+  /* G999
   .deck-backdrop .media-modal-container + .status-deck:not(.slide-in) {
     animation: appear 0.3s ease-in-out;
   }
+  */
   body:has(.media-modal-container + .status-deck) .media-post-link {
     display: none;
   }
@@ -1568,9 +1622,11 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   background-color: var(--button-bg-blur-color);
   /* backdrop-filter: blur(16px); */
   z-index: 10;
+  /* G999
   box-shadow: 0 3px 8px -1px var(--drop-shadow-color),
     0 10px 36px -4px var(--button-bg-blur-color);
   transition: all 0.3s ease-in-out;
+  G999 */
 }
 .deck-container:has(header[hidden]) ~ #compose-button,
 #compose-button[hidden] {
@@ -1615,9 +1671,13 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
   background-color: var(--bg-color);
   width: 100%;
   max-width: calc(var(--main-width) - 50px - 16px);
-  border-radius: 16px 16px 0 0;
+  /* G999 --> */
+  border-radius: 0.5rem 0.5rem 0 0;
+  /* <-- G999 */
+  /* G999
   box-shadow: 0 -1px 32px var(--drop-shadow-color);
   animation: slide-up 0.3s var(--timing-function);
+  G999 */
   /* border: 1px solid var(--outline-color); */
   position: relative;
 }
@@ -1766,6 +1826,9 @@ body:has(.media-modal-container + .status-deck) .media-post-link {
 body > .szh-menu-container {
   position: fixed !important;
   z-index: 10;
+  /* G999 --> */
+  min-width: 50vw;
+  /* <-- G999 */
 }
 .szh-menu-container:not(:empty) {
   inset: 0;
@@ -1779,7 +1842,9 @@ body > .szh-menu-container {
   background-color: var(--bg-color);
   border: 1px solid var(--outline-color);
   border-radius: 8px;
+  /* G999
   box-shadow: 0 3px 16px -3px var(--drop-shadow-color);
+  G999 */
   text-align: left;
   /* animation: appear-smooth 0.15s ease-in-out; */
   width: 16em;
@@ -2140,21 +2205,32 @@ body > .szh-menu-container {
 
 :is(.shiny-pill, :root .toastify.shiny-pill) {
   pointer-events: auto;
+  /* G999
   color: var(--link-text-color);
+  G999 */
   font-weight: 500;
+  /* G999
   text-shadow: 0 1px var(--bg-color);
   background-color: var(--bg-color);
+  G999 */
   border: 2px solid var(--link-faded-color);
+  /* G999
   box-shadow: 0 3px 16px var(--drop-shadow-color),
     0 6px 16px -3px var(--drop-shadow-color);
+  G999 */
 }
 :is(.shiny-pill, :root .toastify.shiny-pill):hover:not(:active) {
-  color: var(--text-color);
+  /* G999 ---> */
+  color: var(--button-bg-color);
+  background: var(--text-color);
+  /* <--- G999 */
   border-color: var(--link-color);
   filter: none !important;
+  /* G999
   box-shadow: 0 3px 16px var(--drop-shadow-color),
     0 6px 16px -3px var(--drop-shadow-color),
     0 6px 16px var(--drop-shadow-color);
+  G999 */
 }
 
 /* TOAST */
@@ -2168,8 +2244,10 @@ body > .szh-menu-container {
   text-shadow: 0 calc(var(--hairline-width) * -1) var(--drop-shadow-color);
   background-color: var(--button-bg-color);
   background-image: none;
+  /* G999
   box-shadow: 0 3px 8px -1px var(--drop-shadow-color),
     0 10px 36px -4px var(--button-bg-blur-color);
+  G999 */
   text-align: center;
 }
 .toastify-bottom {
@@ -2180,7 +2258,9 @@ body > .szh-menu-container {
 
 :root .toastify.alert {
   z-index: 1001;
+  /* G999
   box-shadow: 0 8px 32px var(--text-insignificant-color);
+  G999 */
   background-color: var(--bg-color);
   color: var(--text-color);
   cursor: pointer;
@@ -2326,26 +2406,46 @@ ul.link-list li a .icon {
 
 .nav-menu-button.with-avatar {
   position: relative;
+  /* G999 --> */
+  padding: 0;
+  height: 4em;
+  /* <-- G999 */
 }
 .nav-menu-button:is(:hover, :focus):not(:active) {
   filter: none !important;
 }
+/* G999
 .nav-menu-button .avatar {
   box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--link-light-color) !important;
 }
 .nav-menu-button:is(:hover, :focus, .active) .avatar {
   box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--link-color) !important;
 }
+G999 */
 .nav-menu-button.with-avatar .icon {
   position: absolute;
   bottom: 4px;
-  right: 8px;
+  /* G999 --> */
+  right: -8px;
+  /* <-- G999 */
   background-color: var(--bg-color);
   border-radius: 2px;
+  /* G999 --> */
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  /* <-- G999 */
 }
+/* G999
 .nav-menu-button.with-avatar:hover:not(:active, .active) .icon {
   transform: translateY(-1px);
 }
+G999 */
+/* G999 --> */
+.nav-menu-button.with-avatar .avatar {
+  height: 3rem !important;
+  width: 3rem !important;
+}
+/* <-- G999 */
 
 /* COLUMNS */
 
@@ -2679,17 +2779,23 @@ ul.link-list li a .icon {
     background-color: transparent;
   }
   .timeline-deck > header {
-    --margin-top: 8px;
+    /* G999 ---> */
+    --margin-top: 0px;
     top: var(--margin-top);
-    margin-inline: 8px;
+    margin-inline: 0px;
+    /* <--- G999 */
   }
   .timeline-deck > header .header-grid {
     border-bottom: 0;
+    /* G999
     border-radius: 16px;
+    G999 */
     background-color: var(--bg-faded-blur-color);
     backdrop-filter: blur(16px);
     background-image: none;
+    /* G999
     border-radius: 16px;
+    G999 */
     min-height: 4em;
   }
   .timeline-deck > header[hidden] {
@@ -2709,7 +2815,9 @@ ul.link-list li a .icon {
     margin-top: 24px;
   }
   .timeline:not(.flat) > li {
-    --item-radius: 16px;
+    /* G999 ---> */
+    --item-radius: 0.5rem;
+    /* <--- G999 */
     border: 1px solid var(--divider-color);
     margin: 16px 0;
     background-color: var(--bg-color);

@@ -1,8 +1,12 @@
 .notification {
   display: flex;
-  padding: 16px !important;
+  /* G999 --> */
+  padding: 1rem 0 0 0;
+  /* <-- G999 */
   gap: 12px;
+  /* G999
   animation: appear 0.2s ease-out;
+  G999 */
   clear: both;
 
   b[tabindex='0']:is(:hover, :focus) {
@@ -122,8 +126,10 @@
   color: var(--text-color);
   background-color: var(--bg-faded-color);
   border: 1px dashed var(--link-color);
+  /* G999
   box-shadow: 0 0 0 1px var(--bg-color), 0 -5px 10px var(--bg-color),
     0 -5px 15px var(--bg-color), 0 -5px 20px var(--bg-color);
+  G999 */
   padding: 0.5em 0.75em;
   border-radius: 10em;
   font-size: 90%;
@@ -141,7 +147,9 @@
   background-color: var(--bg-color);
   margin-top: calc(-16px - 1px);
   border-color: var(--reply-to-color);
+  /* G999
   box-shadow: 0 0 0 3px var(--reply-to-faded-color);
+  G999 */
 }
 .notification:focus-visible .status-link,
 .notification .status-link:is(:hover, :focus) {
@@ -151,7 +159,9 @@
 }
 .notification .status-link.status-type-mention:is(:hover, :focus) {
   border-color: var(--reply-to-color);
+  /* G999
   box-shadow: 0 0 5px var(--reply-to-color);
+  G999 */
 }
 .notification .status-link:active {
   filter: brightness(0.95);
@@ -204,18 +214,26 @@
 
 #mentions-option {
   float: right;
-  margin-top: 0.5em;
+  /* G999 --> */
+  margin-top: 1.25rem;
+  /* <-- G999 */
 }
 #mentions-option label {
   color: var(--text-insignificant-color);
   display: inline-block;
-  padding: 1em 16px;
+  /* G999 --> */
+  padding: 0.5rem;
+  /* <-- G999 */
   position: relative;
   cursor: pointer;
   z-index: 1;
-  font-size: 90%;
+  /* G999 --> */
+  font-size: 85%;
+  /* <-- G999 */
   background-color: var(--bg-blur-color);
-  border-radius: 2em;
+  /* G999 --> */
+  border-radius: 0.25em;
+  /* <-- G999 */
 }
 #mentions-option label:has(:checked) {
   color: var(--text-color);

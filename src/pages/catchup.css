@@ -556,7 +556,9 @@
   .post-line {
     font-size: 0.95em;
     border-radius: inherit;
+    /* G999
     animation: appear-smooth 0.3s ease-in-out both;
+    G999 */
     --pad: 16px;
     min-height: 44px;
     padding: var(--pad);
@@ -572,11 +574,13 @@
       'author meta'
       'content content';
     /* align-items: center; */
+    /* G999
     background-image: linear-gradient(
       140deg,
       var(--post-bg-color),
       transparent min(160px, 50%)
     );
+    G999 */
     /* background-image: linear-gradient(
       90deg,
       var(--post-bg-color),

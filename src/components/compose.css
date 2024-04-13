@@ -133,8 +133,10 @@
 #compose-container textarea {
   width: 100%;
   max-width: 100%;
-  height: 5em;
-  min-height: 5em;
+  /* G999 --> */
+  height: 12rem;
+  min-height: 12rem;
+  /* <-- G999 */
   max-height: 50vh;
   resize: vertical;
   line-height: 1.4;
@@ -615,6 +617,7 @@
   display: flex;
   flex-wrap: wrap;
 }
+/* G999
 #custom-emojis-sheet .custom-emojis-list button {
   border-radius: 8px;
   background-image: radial-gradient(
@@ -623,6 +626,7 @@
     transparent
   );
 }
+G999 */
 #custom-emojis-sheet .custom-emojis-list button:is(:hover, :focus) {
   filter: none;
   background-color: var(--bg-faded-color);
