@@ -12,6 +12,7 @@ import safeBoundingBoxPadding from '../utils/safe-bounding-box-padding';
 import states from '../utils/states';
 import store from '../utils/store';
 
+import AccountsMenu from './accounts-menu'
 import Avatar from './avatar';
 import Icon from './icon';
 import MenuLink from './menu-link';
@@ -298,6 +299,8 @@ function NavMenu(props) {
               >
                 <Icon icon="group" size="l" /> <span>Accounts&hellip;</span>
               </MenuItem>
+
+              <AccountsMenu/>
             </>
           ) : (
             <>
@@ -324,6 +327,35 @@ function NavMenu(props) {
           </MenuLink>
           {authenticated ? (
             <>
+              {currentAccount?.info?.id && (
+                <MenuLink to={`/${instance}/a/${currentAccount.info.id}`}>
+                  <Icon icon="user" size="l" />{' '}<span>Profile</span>
+                </MenuLink>
+              )}
+              <MenuItem
+                onClick={() => {
+                  states.showGenericAccounts = {
+                    id: 'mute',
+                    heading: 'Muted users',
+                    fetchAccounts: fetchMutes,
+                    excludeRelationshipAttrs: ['muting'],
+                  };
+                }}
+              >
+                <Icon icon="mute" size="l" />{' '}<span>Muted users&hellip;</span>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  states.showGenericAccounts = {
+                    id: 'block',
+                    heading: 'Blocked users',
+                    fetchAccounts: fetchBlocks,
+                    excludeRelationshipAttrs: ['blocking'],
+                  };
+                }}
+              >
+                <Icon icon="block" size="l" />{' '}<span>Blocked users&hellip;</span>
+              </MenuItem>
               <MenuDivider className="divider-grow" />
               <MenuItem
                 onClick={() => {
@@ -346,7 +378,7 @@ function NavMenu(props) {
                   states.showSettings = true;
                 }}
               >
-                <Icon icon="gear" size="l" /> <span>Settings&hellip;</span>
+                <Icon icon="gear" size="l" />{' '}<span>Settings&hellip;</span>
               </MenuItem>
             </>
           ) : (
@@ -357,7 +389,7 @@ function NavMenu(props) {
                   states.showSettings = true;
                 }}
               >
-                <Icon icon="gear" size="l" /> <span>Settings&hellip;</span>
+                <Icon icon="gear" size="l" />{' '}<span>Settings&hellip;</span>
               </MenuItem>
             </>
           )}
