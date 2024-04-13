@@ -103,8 +103,7 @@ Prerequisites: Node.js 18+
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm run preview` - Preview the production build
-- `npm run fetch-instances` - Fetch instances list from [instances.social](https://instances.social/), save it to `src/data/instances.json`
-  - requires `.env.dev` file with `INSTANCES_SOCIAL_SECRET_TOKEN` variable set
+- `npm run fetch-instances` - Fetch instances list from [joinmastodon.org/servers](https://joinmastodon.org/servers), save it to `src/data/instances.json`
 - `npm run sourcemap` - Run `source-map-explorer` on the production build
 
 ## Tech stack
@@ -139,7 +138,7 @@ Download or `git clone` this repository. Use `production` branch for *stable* re
 Customization can be done by passing environment variables to the build command. Examples:
 
 ```bash
-PHANPY_APP_TITLE="Phanpy Dev" \
+PHANPY_CLIENT_NAME="Phanpy Dev" \
     PHANPY_WEBSITE="https://dev.phanpy.social" \
     npm run build
 ```
@@ -180,6 +179,10 @@ Available variables:
   - May specify a self-hosted Lingva instance, powered by either [lingva-translate](https://github.com/thedaviddelta/lingva-translate) or [lingva-api](https://github.com/cheeaun/lingva-api)
   - List of fallback instances hard-coded in `/.env`
   - [↗️ List of lingva-translate instances](https://github.com/thedaviddelta/lingva-translate?tab=readme-ov-file#instances)
+- `PHANPY_GIPHY_API_KEY` (optional, no defaults):
+  - API key for [GIPHY](https://developers.giphy.com/). See [API docs](https://developers.giphy.com/docs/api/).
+  - If provided, a setting will appear for users to enable the GIF picker in the composer. Disabled by default.
+  - This is not self-hosted.
 
 ### Static site hosting
 
@@ -193,12 +196,16 @@ See documentation for [lingva-translate](https://github.com/thedaviddelta/lingva
 
 These are self-hosted by other wonderful folks.
 
-- [ferengi.one](https://ferengi.one/) by [@david@collantes.social](https://collantes.social/@david)
+- [ferengi.one](https://m.ferengi.one/) by [@david@collantes.social](https://collantes.social/@david)
 - [phanpy.blaede.family](https://phanpy.blaede.family/) by [@cassidy@blaede.family](https://mastodon.blaede.family/@cassidy)
 - [phanpy.mstdn.mx](https://phanpy.mstdn.mx/) by [@maop@mstdn.mx](https://mstdn.mx/@maop)
 - [phanpy.vmst.io](https://phanpy.vmst.io/) by [@vmstan@vmst.io](https://vmst.io/@vmstan)
 - [phanpy.gotosocial.social](https://phanpy.gotosocial.social/) by [@admin@gotosocial.social](https://gotosocial.social/@admin)
 - [phanpy.bauxite.tech](https://phanpy.bauxite.tech) by [@b4ux1t3@hachyderm.io](https://hachyderm.io/@b4ux1t3)
+- [phanpy.hear-me.social](https://phanpy.hear-me.social) by [@admin@hear-me.social](https://hear-me.social/@admin)
+- [phanpy.fulda.social](https://phanpy.fulda.social) by [@Ganneff@fulda.social](https://fulda.social/@Ganneff)
+- [phanpy.crmbl.uk](https://phanpy.crmbl.uk) by [@snail@crmbl.uk](https://mstdn.crmbl.uk/@snail)
+- [halo.mookiesplace.com](https://halo.mookiesplace.com) by [@mookie@mookiesplace.com](https://mookiesplace.com/@mookie)
 
 > Note: Add yours by creating a pull request.
 
@@ -249,6 +256,8 @@ And here I am. Building a Mastodon web client.
 - [Statuzer](https://statuzer.com/)
 - [Tusked](https://tusked.app/)
 - [Mastodon Glitch Edition (standalone frontend)](https://iceshrimp.dev/iceshrimp/masto-fe-standalone)
+- [Mangane](https://github.com/BDX-town/Mangane)
+- [TheDesk](https://github.com/cutls/TheDesk)
 - [More...](https://github.com/hueyy/awesome-mastodon/#clients)
 
 ## 💁‍♂️ Notice to all other social media client developers

@@ -2,7 +2,11 @@
   display: inline-block;
   line-height: 0;
   aspect-ratio: 1/1;
-  border-radius: 0.25em;
+  /* G999
+  border-radius: 50%;
+  G999 ---> */
+  border-radius: 0.4rem;;
+  /* <--- G999 */
   overflow: hidden;
   background-color: var(--bg-faded-color);
   box-shadow: 0 0 0 1px var(--bg-blur-color);

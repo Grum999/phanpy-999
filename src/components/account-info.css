@@ -9,10 +9,14 @@
   --original-color: var(--link-color);
 
   .note {
-    font-size: 95%;
+    font-size: 0.95em;
     line-height: 1.4;
     text-wrap: pretty;
     margin-bottom: 16px;
+
+    &:empty {
+      display: none;
+    }
 
     > *:first-child {
       margin-top: 0;
@@ -101,6 +105,9 @@
 }
 
 .account-container .account-moved {
+  /* G999
+  animation: fade-in 0.3s both ease-in-out 0.3s;
+  G999 */
   padding: 16px;
   background-color: var(--bg-color);
   position: absolute;
@@ -108,6 +115,9 @@
   inset-inline: 8px;
   z-index: 3;
   border: 1px solid var(--outline-color);
+  /* G999
+  box-shadow: 0 8px 16px var(--drop-shadow-color);
+  G999 */
   border-radius: calc(16px - 8px);
   overflow: hidden;
 
@@ -217,8 +227,10 @@
   /* box-shadow: -8px 0 24px var(--header-color-3, --bg-color),
     8px 0 24px var(--header-color-4, --bg-color); */
   overflow: initial;
+  /* G999
   filter: drop-shadow(-2px 0 4px var(--header-color-3, --bg-color))
     drop-shadow(2px 0 4px var(--header-color-4, --bg-color));
+  G999 */
 }
 .account-container header .avatar:not(.has-alpha) img {
   border-radius: inherit;
@@ -766,6 +778,7 @@
     border-radius: var(--item-radius);
     overflow: hidden;
     /* box-shadow: 0px 1px var(--bg-blur-color), 0 0 64px var(--bg-color); */
+    /* G999
     --shadow-offset: 16px;
     --shadow-blur: 32px;
     --shadow-spread: calc(var(--shadow-blur) * -0.75);
@@ -774,6 +787,7 @@
         var(--header-color-1, var(--drop-shadow-color)),
       var(--shadow-offset) var(--shadow-offset) var(--shadow-blur)
         var(--shadow-spread) var(--header-color-2, var(--drop-shadow-color));
+    G999 */
   }
   /* .timeline-start .account-container .header-banner {
     margin-bottom: -77px;
@@ -789,8 +803,10 @@
   .timeline-start .account-container header .account-block .avatar {
     width: 112px !important;
     height: 112px !important;
+    /* G999
     filter: drop-shadow(-8px 0 8px var(--header-color-3, --bg-color))
       drop-shadow(8px 0 8px var(--header-color-4, --bg-color));
+    G999 */
   }
 }
 
@@ -817,6 +833,111 @@
 
     * {
       vertical-align: middle;
+    }
+  }
+}
+
+#edit-profile-container {
+  p {
+    margin-block: 8px;
+  }
+
+  label {
+    input,
+    textarea {
+      display: block;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 5em;
+      max-height: 50vh;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    th {
+      text-align: left;
+      color: var(--text-insignificant-color);
+      font-weight: normal;
+      font-size: 0.8em;
+      text-transform: uppercase;
+    }
+
+    tbody tr td:first-child {
+      width: 40%;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+
+  footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+
+    * {
+      vertical-align: middle;
+    }
+  }
+}
+
+.handle-info {
+  .handle-handle {
+    display: inline-block;
+    margin-block: 5px;
+
+    b {
+      font-weight: 600;
+      padding: 2px 4px;
+      border-radius: 4px;
+      display: inline-block;
+      box-shadow: 0 0 0 5px var(--bg-blur-color);
+
+      &.handle-username {
+        color: var(--orange-fg-color);
+        background-color: var(--orange-bg-color);
+      }
+
+      &.handle-server {
+        color: var(--purple-fg-color);
+        background-color: var(--purple-bg-color);
+      }
+    }
+  }
+
+  .handle-at {
+    display: inline-block;
+    margin-inline: -3px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .handle-legend {
+    margin-top: 0.25em;
+  }
+
+  .handle-legend-icon {
+    overflow: hidden;
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 4px solid transparent;
+    border-radius: 8px;
+    background-clip: padding-box;
+
+    &.username {
+      background-color: var(--orange-fg-color);
+      border-color: var(--orange-bg-color);
+    }
+    &.server {
+      background-color: var(--purple-fg-color);
+      border-color: var(--purple-bg-color);
     }
   }
 }

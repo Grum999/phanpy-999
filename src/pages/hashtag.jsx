@@ -109,8 +109,9 @@ function Hashtags({ media: mediaView, columnMode, ...props }) {
         })
         .next();
       let { value } = results;
-      value = filteredItems(value, 'public');
-      if (value?.length) {
+      const valueContainsLatestItem = value[0]?.id === latestItem.current; // since_id might not be supported
+      if (value?.length && !valueContainsLatestItem) {
+        value = filteredItems(value, 'public');
         return true;
       }
       return false;
@@ -164,7 +165,7 @@ function Hashtags({ media: mediaView, columnMode, ...props }) {
           portal
           setDownOverflow
           overflow="auto"
-          viewScroll="close"
+          // viewScroll="close"
           position="anchor"
           menuButton={
             <button type="button" class="plain">
@@ -285,7 +286,7 @@ function Hashtags({ media: mediaView, columnMode, ...props }) {
                   required
                   autocorrect="off"
                   autocapitalize="off"
-                  spellcheck={false}
+                  spellCheck={false}
                   // no spaces, no hashtags
                   pattern="[^#][^\s#]+[^#]"
                   disabled={reachLimit}

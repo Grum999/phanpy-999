@@ -1,5 +1,7 @@
 .media-post {
-  --item-radius: 16px;
+  /* G999 ---> */
+  --item-radius: 0.5rem;
+  /* <--- G999 */
   position: relative;
   animation: appear-smooth 1s ease-out;
 
@@ -34,7 +36,7 @@
     word-break: break-word;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    mix-blend-mode: luminosity;
+    /* mix-blend-mode: luminosity; */
     -webkit-line-clamp: 3;
     line-clamp: 3;
     -webkit-box-orient: vertical;

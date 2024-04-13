@@ -44,6 +44,18 @@
   }
 }
 
+#search-page h2 {
+  a {
+    .icon {
+      vertical-align: middle;
+      transition: transform 0.2s;
+    }
+    &:hover .icon {
+      transform: translateX(4px);
+    }
+  }
+}
+
 #search-page ul.accounts-list {
   display: flex;
   flex-wrap: wrap;
@@ -113,22 +125,25 @@ ul.link-list.hashtag-list li a {
   display: none;
 }
 .search-popover-item:is(:hover, :focus, .focus) {
-  background-color: var(--button-bg-color);
-  color: var(--button-text-color);
+  background-color: var(--link-bg-color);
+  color: var(--text-color);
+}
+.search-popover-item:is(:focus, .focus) {
+  box-shadow: inset 4px 0 0 0 var(--button-bg-color);
 }
 .search-popover-item :is(mark, q) {
-  background-color: var(--bg-faded-blur-color);
-  color: inherit;
+  color: var(--text-color);
+  background-color: var(--link-bg-color);
 }
 .search-popover-item:is(:hover, :focus, .focus) :is(mark, q) {
-  background-color: var(--button-bg-color);
+  background-color: var(--link-bg-color);
 }
 .search-popover:hover .search-popover-item.focus:not(:hover, :focus),
 .search-popover:hover
   .search-popover-item.focus:not(:hover, :focus)
   :is(mark, q) {
-  background-color: unset;
-  color: unset;
+  /* background-color: unset; */
+  /* color: unset; */
 }
 .search-popover-item > span {
   min-width: 0;

@@ -17,7 +17,6 @@ import { api } from '../utils/api';
 import { fetchRelationships } from '../utils/relationships';
 import shortenNumber from '../utils/shorten-number';
 import usePageVisibility from '../utils/usePageVisibility';
-import useScroll from '../utils/useScroll';
 import useTitle from '../utils/useTitle';
 
 const SHORT_LIMIT = 5;
@@ -151,11 +150,9 @@ function Search({ columnMode, ...props }) {
     })();
   }
 
-  const { reachStart } = useScroll({
-    scrollableRef,
-  });
   const lastHiddenTime = useRef();
   usePageVisibility((visible) => {
+    const reachStart = scrollableRef.current?.scrollTop === 0;
     if (visible && reachStart) {
       const timeDiff = Date.now() - lastHiddenTime.current;
       if (!lastHiddenTime.current || timeDiff > 1000 * 3) {
@@ -177,9 +174,10 @@ function Search({ columnMode, ...props }) {
   }, [q, type, instance]);
 
   useHotkeys(
-    '/',
+    ['/', 'Slash'],
     (e) => {
       searchFormRef.current?.focus?.();
+      searchFormRef.current?.select?.();
     },
     {
       preventDefault: true,
@@ -256,7 +254,14 @@ function Search({ columnMode, ...props }) {
               {(!type || type === 'accounts') && (
                 <>
                   {type !== 'accounts' && (
-                    <h2 class="timeline-header">Accounts</h2>
+                    <h2 class="timeline-header">
+                      Accounts{' '}
+                      <Link
+                        to={`/search?q=${encodeURIComponent(q)}&type=accounts`}
+                      >
+                        <Icon icon="arrow-right" size="l" />
+                      </Link>
+                    </h2>
                   )}
                   {accountResults.length > 0 ? (
                     <>
@@ -276,7 +281,9 @@ function Search({ columnMode, ...props }) {
                         <div class="ui-state">
                           <Link
                             class="plain button"
-                            to={`/search?q=${q}&type=accounts`}
+                            to={`/search?q=${encodeURIComponent(
+                              q,
+                            )}&type=accounts`}
                           >
                             See more accounts <Icon icon="arrow-right" />
                           </Link>
@@ -298,7 +305,14 @@ function Search({ columnMode, ...props }) {
               {(!type || type === 'hashtags') && (
                 <>
                   {type !== 'hashtags' && (
-                    <h2 class="timeline-header">Hashtags</h2>
+                    <h2 class="timeline-header">
+                      Hashtags{' '}
+                      <Link
+                        to={`/search?q=${encodeURIComponent(q)}&type=hashtags`}
+                      >
+                        <Icon icon="arrow-right" size="l" />
+                      </Link>
+                    </h2>
                   )}
                   {hashtagResults.length > 0 ? (
                     <>
@@ -334,7 +348,9 @@ function Search({ columnMode, ...props }) {
                         <div class="ui-state">
                           <Link
                             class="plain button"
-                            to={`/search?q=${q}&type=hashtags`}
+                            to={`/search?q=${encodeURIComponent(
+                              q,
+                            )}&type=hashtags`}
                           >
                             See more hashtags <Icon icon="arrow-right" />
                           </Link>
@@ -356,7 +372,14 @@ function Search({ columnMode, ...props }) {
               {(!type || type === 'statuses') && (
                 <>
                   {type !== 'statuses' && (
-                    <h2 class="timeline-header">Posts</h2>
+                    <h2 class="timeline-header">
+                      Posts{' '}
+                      <Link
+                        to={`/search?q=${encodeURIComponent(q)}&type=statuses`}
+                      >
+                        <Icon icon="arrow-right" size="l" />
+                      </Link>
+                    </h2>
                   )}
                   {statusResults.length > 0 ? (
                     <>
@@ -380,7 +403,9 @@ function Search({ columnMode, ...props }) {
                         <div class="ui-state">
                           <Link
                             class="plain button"
-                            to={`/search?q=${q}&type=statuses`}
+                            to={`/search?q=${encodeURIComponent(
+                              q,
+                            )}&type=statuses`}
                           >
                             See more posts <Icon icon="arrow-right" />
                           </Link>

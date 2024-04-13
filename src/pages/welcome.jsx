@@ -32,19 +32,57 @@ function Welcome() {
   return (
     <main id="welcome">
       <div class="hero-container">
-        <h1>
-          <img
-            src={logo}
-            alt=""
-            width="200"
-            height="200"
-            style={{
-              aspectRatio: '1/1',
-              marginBlockEnd: -16,
-            }}
-          />
-          <p>Phanpy-999</p>
-        </h1>
+        <div class="hero-content">
+          <h1>
+            <img
+              src={logo}
+              alt=""
+              width="160"
+              height="160"
+              style={{
+                aspectRatio: '1/1',
+                marginBlockEnd: -16,
+              }}
+            />
+            <img src={logoText} alt="Phanpy" width="200" />
+          </h1>
+          <p class="desc">Phanpy-999</p>
+          <p>
+            <Link
+              to={
+                DEFAULT_INSTANCE
+                  ? `/login?instance=${DEFAULT_INSTANCE}&submit=1`
+                  : '/login'
+              }
+              class="button"
+            >
+              {DEFAULT_INSTANCE ? 'Log in' : 'Log in with Mastodon'}
+            </Link>
+          </p>
+          {DEFAULT_INSTANCE && DEFAULT_INSTANCE_REGISTRATION_URL && (
+            <p>
+              <a href={DEFAULT_INSTANCE_REGISTRATION_URL} class="button plain5">
+                Sign up
+              </a>
+            </p>
+          )}
+          {!DEFAULT_INSTANCE && (
+            <p class="insignificant">
+              <small>
+                Connect your existing Mastodon/Fediverse account.
+                <br />
+                Your credentials are not stored on this server.
+              </small>
+            </p>
+          )}
+        </div>
+        {(appSite || appVersion) && (
+          <p class="app-site-version">
+            <small>
+              {appSite} {appVersion}
+            </small>
+          </p>
+        )}
         <p>
           <big>
             <b>
@@ -56,13 +94,6 @@ function Welcome() {
         </p>
         <p class="desc">Grum999's tweaked version</p>
       </div>
-      <hr />
-      <p>
-        This is a tweaked version of <a href="https://phanpy.social" target="_blank">Phanpy</a> :: Get Grum999's tweaked source code on <a href="https://github.com/grum999/phanpy-999" target="_blank">Github</a>
-      </p>
-      <p>
-        Access to original {' '}<a href="https://phanpy.social" target="_blank">Phanpy.Social</a>{' '} portal or go to developer's{' '}<a href="https://github.com/cheeaun/phanpy" target="_blank">Github</a>
-      </p>
     </main>
   );
 }

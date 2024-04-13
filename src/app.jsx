@@ -14,7 +14,7 @@ import { subscribe } from 'valtio';
 
 import BackgroundService from './components/background-service';
 import ComposeButton from './components/compose-button';
-import { ICONS } from './components/icon';
+import { ICONS } from './components/ICONS';
 import KeyboardShortcutsHelp from './components/keyboard-shortcuts-help';
 import Loader from './components/loader';
 import Modals from './components/modals';
@@ -24,7 +24,9 @@ import Shortcuts from './components/shortcuts';
 import NotFound from './pages/404';
 import AccountStatuses from './pages/account-statuses';
 import Bookmarks from './pages/bookmarks';
+import Catchup from './pages/catchup';
 import Favourites from './pages/favourites';
+import Filters from './pages/filters';
 import FollowedHashtags from './pages/followed-hashtags';
 import Following from './pages/following';
 import Hashtag from './pages/hashtag';
@@ -224,7 +226,7 @@ if (isIOS) {
           `meta[name="theme-color"][media*="${colorScheme}"]`,
         );
         if ($meta) {
-          const color = $meta.content;
+          const color = $meta.dataset.content;
           const tempColor = $meta.dataset.contentTemp;
           $meta.content = tempColor || '';
           setTimeout(() => {
@@ -394,7 +396,7 @@ function PrimaryRoutes({ isLoggedIn, loading }) {
   const location = useLocation();
   const nonRootLocation = useMemo(() => {
     const { pathname } = location;
-    return !/^\/(login|welcome)/.test(pathname);
+    return !/^\/(login|welcome)/i.test(pathname);
   }, [location]);
 
   return (
@@ -456,7 +458,9 @@ function SecondaryRoutes({ isLoggedIn }) {
             <Route index element={<Lists />} />
             <Route path=":id" element={<List />} />
           </Route>
-          <Route path="/ft" element={<FollowedHashtags />} />
+          <Route path="/fh" element={<FollowedHashtags />} />
+          <Route path="/ft" element={<Filters />} />
+          <Route path="/catchup" element={<Catchup />} />
         </>
       )}
       <Route path="/:instance?/t/:hashtag" element={<Hashtag />} />

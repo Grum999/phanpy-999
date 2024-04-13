@@ -2,15 +2,16 @@ import './compose.css';
 
 import '@github/text-expander-element';
 import { MenuItem } from '@szhsin/react-menu';
-import equal from 'fast-deep-equal';
+import { deepEqual } from 'fast-equals';
 import { forwardRef } from 'preact/compat';
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { substring } from 'runes2';
 import stringLength from 'string-length';
 import { uid } from 'uid/single';
 import { useDebouncedCallback, useThrottledCallback } from 'use-debounce';
 import { useSnapshot } from 'valtio';
+
+import poweredByGiphyURL from '../assets/powered-by-giphy.svg';
 
 import Menu2 from '../components/menu2';
 import supportedLanguages from '../data/status-supported-languages';
@@ -42,7 +43,10 @@ import Loader from './loader';
 import Modal from './modal';
 import Status from './status';
 
-const { PHANPY_IMG_ALT_API_URL: IMG_ALT_API_URL } = import.meta.env;
+const {
+  PHANPY_IMG_ALT_API_URL: IMG_ALT_API_URL,
+  PHANPY_GIPHY_API_KEY: GIPHY_API_KEY,
+} = import.meta.env;
 
 const supportedLanguagesMap = supportedLanguages.reduce((acc, l) => {
   const [code, common, native] = l;
@@ -131,24 +135,38 @@ const SCAN_RE = new RegExp(
   'g',
 );
 
+const segmenter = new Intl.Segmenter();
 function highlightText(text, { maxCharacters = Infinity }) {
   // Accept text string, return formatted HTML string
-  let html = text;
+  // Escape all HTML special characters
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
   // Exceeded characters limit
   const { composerCharacterCount } = states;
-  let leftoverHTML = '';
   if (composerCharacterCount > maxCharacters) {
-    // NOTE: runes2 substring considers surrogate pairs
-    // const leftoverCount = composerCharacterCount - maxCharacters;
     // Highlight exceeded characters
-    leftoverHTML =
-      '<mark class="compose-highlight-exceeded">' +
-      // html.slice(-leftoverCount) +
-      substring(html, maxCharacters) +
-      '</mark>';
-    // html = html.slice(0, -leftoverCount);
-    html = substring(html, 0, maxCharacters);
-    return html + leftoverHTML;
+    let withinLimitHTML = '',
+      exceedLimitHTML = '';
+    const htmlSegments = segmenter.segment(html);
+    for (const { segment, index } of htmlSegments) {
+      if (index < maxCharacters) {
+        withinLimitHTML += segment;
+      } else {
+        exceedLimitHTML += segment;
+      }
+    }
+    if (exceedLimitHTML) {
+      exceedLimitHTML =
+        '<mark class="compose-highlight-exceeded">' +
+        exceedLimitHTML +
+        '</mark>';
+    }
+    return withinLimitHTML + exceedLimitHTML;
   }
 
   return html
@@ -160,6 +178,8 @@ function highlightText(text, { maxCharacters = Infinity }) {
       '$1<mark class="compose-highlight-emoji-shortcode">$2</mark>',
     ); // Emoji shortcodes
 }
+
+const rtf = new Intl.RelativeTimeFormat();
 
 function Compose({
   onClose,
@@ -222,6 +242,12 @@ function Compose({
   };
   const focusTextarea = () => {
     setTimeout(() => {
+      if (!textareaRef.current) return;
+      // status starts with newline, focus on first position
+      if (draftStatus?.status?.startsWith?.('\n')) {
+        textareaRef.current.selectionStart = 0;
+        textareaRef.current.selectionEnd = 0;
+      }
       console.debug('FOCUS textarea');
       textareaRef.current?.focus();
     }, 300);
@@ -278,7 +304,7 @@ function Compose({
           setVisibility(visibility);
           setLanguage(language || presf.postingDefaultLanguage || DEFAULT_LANG);
           setSensitive(sensitive);
-          setPoll(composablePoll);
+          if (composablePoll) setPoll(composablePoll);
           setMediaAttachments(mediaAttachments);
           setUIState('default');
         } catch (e) {
@@ -502,7 +528,10 @@ function Compose({
         mediaAttachments,
       },
     };
-    if (!equal(backgroundDraft, prevBackgroundDraft.current) && !canClose()) {
+    if (
+      !deepEqual(backgroundDraft, prevBackgroundDraft.current) &&
+      !canClose()
+    ) {
       console.debug('not equal', backgroundDraft, prevBackgroundDraft.current);
       db.drafts
         .set(key, {
@@ -586,6 +615,7 @@ function Compose({
   }, [mediaAttachments]);
 
   const [showEmoji2Picker, setShowEmoji2Picker] = useState(false);
+  const [showGIFPicker, setShowGIFPicker] = useState(false);
 
   const [topSupportedLanguages, restSupportedLanguages] = useMemo(() => {
     const topLanguages = [];
@@ -614,6 +644,16 @@ function Compose({
     );
     return [topLanguages, restLanguages];
   }, [language]);
+
+  const replyToStatusMonthsAgo = useMemo(
+    () =>
+      !!replyToStatus?.createdAt &&
+      Math.floor(
+        (Date.now() - new Date(replyToStatus.createdAt)) /
+          (1000 * 60 * 60 * 24 * 30),
+      ),
+    [replyToStatus],
+  );
 
   return (
     <div id="compose-container-outer">
@@ -764,6 +804,16 @@ function Compose({
               Replying to @
               {replyToStatus.account.acct || replyToStatus.account.username}
               &rsquo;s post
+              {replyToStatusMonthsAgo >= 3 && (
+                <>
+                  {' '}
+                  (
+                  <strong>
+                    {rtf.format(-replyToStatusMonthsAgo, 'month')}
+                  </strong>
+                  )
+                </>
+              )}
             </div>
           </div>
         )}
@@ -1191,6 +1241,18 @@ function Compose({
               >
                 <Icon icon="emoji2" />
               </button>
+              {!!states.settings.composerGIFPicker && (
+                <button
+                  type="button"
+                  class="toolbar-button gif-picker-button"
+                  disabled={uiState === 'loading'}
+                  onClick={() => {
+                    setShowGIFPicker(true);
+                  }}
+                >
+                  <span>GIF</span>
+                </button>
+              )}
             </span>
             <div class="spacer" />
             {uiState === 'loading' ? (
@@ -1244,7 +1306,6 @@ function Compose({
       </div>
       {showEmoji2Picker && (
         <Modal
-          class="light"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowEmoji2Picker(false);
@@ -1272,6 +1333,64 @@ function Compose({
                 selectionEnd + emojiWithSpace.length;
               textarea.focus();
               textarea.dispatchEvent(new Event('input'));
+            }}
+          />
+        </Modal>
+      )}
+      {showGIFPicker && (
+        <Modal
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowGIFPicker(false);
+            }
+          }}
+        >
+          <GIFPickerModal
+            onClose={() => setShowGIFPicker(false)}
+            onSelect={({ url, type, alt_text }) => {
+              console.log('GIF URL', url);
+              if (mediaAttachments.length >= maxMediaAttachments) {
+                alert(
+                  `You can only attach up to ${maxMediaAttachments} files.`,
+                );
+                return;
+              }
+              // Download the GIF and insert it as media attachment
+              (async () => {
+                let theToast;
+                try {
+                  theToast = showToast({
+                    text: 'Downloading GIF…',
+                    duration: -1,
+                  });
+                  const blob = await fetch(url, {
+                    referrerPolicy: 'no-referrer',
+                  }).then((res) => res.blob());
+                  const file = new File(
+                    [blob],
+                    type === 'video/mp4' ? 'video.mp4' : 'image.gif',
+                    {
+                      type,
+                    },
+                  );
+                  const newMediaAttachments = [
+                    ...mediaAttachments,
+                    {
+                      file,
+                      type,
+                      size: file.size,
+                      id: null,
+                      description: alt_text || '',
+                    },
+                  ];
+                  setMediaAttachments(newMediaAttachments);
+                  theToast?.hideToast?.();
+                } catch (err) {
+                  console.error(err);
+                  theToast?.hideToast?.();
+                  showToast('Failed to download GIF');
+                }
+              })();
             }}
           />
         </Modal>
@@ -1548,7 +1667,7 @@ const Textarea = forwardRef((props, ref) => {
         onKeyDown={(e) => {
           // Get line before cursor position after pressing 'Enter'
           const { key, target } = e;
-          if (key === 'Enter') {
+          if (key === 'Enter' && !(e.ctrlKey || e.metaKey)) {
             try {
               const { value, selectionStart } = target;
               const textBeforeCursor = value.slice(0, selectionStart);
@@ -1619,27 +1738,31 @@ function CharCountMeter({ maxCharacters = 500, hidden }) {
   const charCount = snapStates.composerCharacterCount;
   const leftChars = maxCharacters - charCount;
   if (hidden) {
-    return <meter class="donut" hidden />;
+    return <span class="char-counter" hidden />;
   }
   return (
-    <meter
-      class={`donut ${
-        leftChars <= -10
-          ? 'explode'
-          : leftChars <= 0
-          ? 'danger'
-          : leftChars <= 20
-          ? 'warning'
-          : ''
-      }`}
-      value={charCount}
-      max={maxCharacters}
-      data-left={leftChars}
+    <span
+      class="char-counter"
       title={`${leftChars}/${maxCharacters}`}
       style={{
         '--percentage': (charCount / maxCharacters) * 100,
       }}
-    />
+    >
+      <meter
+        class={`${
+          leftChars <= -10
+            ? 'explode'
+            : leftChars <= 0
+            ? 'danger'
+            : leftChars <= 20
+            ? 'warning'
+            : ''
+        }`}
+        value={charCount}
+        max={maxCharacters}
+      />
+      <span class="counter">{leftChars}</span>
+    </span>
   );
 }
 
@@ -1664,6 +1787,9 @@ function MediaAttachment({
     onDescriptionChange,
     250,
   );
+  useEffect(() => {
+    debouncedOnDescriptionChange(description);
+  }, [description, debouncedOnDescriptionChange]);
 
   const [showModal, setShowModal] = useState(false);
   const textareaRef = useRef(null);
@@ -1712,7 +1838,7 @@ function MediaAttachment({
           onInput={(e) => {
             const { value } = e.target;
             setDescription(value);
-            debouncedOnDescriptionChange(value);
+            // debouncedOnDescriptionChange(value);
           }}
         ></textarea>
       )}
@@ -1758,7 +1884,6 @@ function MediaAttachment({
       </div>
       {showModal && (
         <Modal
-          class="light"
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               setShowModal(false);
@@ -1838,10 +1963,17 @@ function MediaAttachment({
                                   method: 'POST',
                                   body,
                                 }).then((r) => r.json());
+                                if (response.error) {
+                                  throw new Error(response.error);
+                                }
                                 setDescription(response.description);
                               } catch (e) {
                                 console.error(e);
-                                showToast('Failed to generate description');
+                                showToast(
+                                  `Failed to generate description${
+                                    e?.message ? `: ${e.message}` : ''
+                                  }`,
+                                );
                               } finally {
                                 setUIState('default');
                                 toastRef.current?.hideToast?.();
@@ -2185,6 +2317,227 @@ function CustomEmojisModal({
                 ),
             )}
         </div>
+      </main>
+    </div>
+  );
+}
+
+const GIFS_PER_PAGE = 20;
+function GIFPickerModal({ onClose = () => {}, onSelect = () => {} }) {
+  const [uiState, setUIState] = useState('default');
+  const [results, setResults] = useState([]);
+  const formRef = useRef(null);
+  const qRef = useRef(null);
+  const currentOffset = useRef(0);
+  const scrollableRef = useRef(null);
+
+  function fetchGIFs({ offset }) {
+    console.log('fetchGIFs', { offset });
+    if (!qRef.current?.value) return;
+    setUIState('loading');
+    scrollableRef.current?.scrollTo?.({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+    (async () => {
+      try {
+        const query = {
+          api_key: GIPHY_API_KEY,
+          q: qRef.current.value,
+          rating: 'g',
+          limit: GIFS_PER_PAGE,
+          bundle: 'messaging_non_clips',
+          offset,
+        };
+        const response = await fetch(
+          'https://api.giphy.com/v1/gifs/search?' + new URLSearchParams(query),
+          {
+            referrerPolicy: 'no-referrer',
+          },
+        ).then((r) => r.json());
+        currentOffset.current = response.pagination?.offset || 0;
+        setResults(response);
+        setUIState('results');
+      } catch (e) {
+        setUIState('error');
+        console.error(e);
+      }
+    })();
+  }
+
+  useEffect(() => {
+    qRef.current?.focus();
+  }, []);
+
+  return (
+    <div id="gif-picker-sheet" class="sheet">
+      {!!onClose && (
+        <button type="button" class="sheet-close" onClick={onClose}>
+          <Icon icon="x" />
+        </button>
+      )}
+      <header>
+        <form
+          ref={formRef}
+          onSubmit={(e) => {
+            e.preventDefault();
+            fetchGIFs({ offset: 0 });
+          }}
+        >
+          <input
+            ref={qRef}
+            type="search"
+            name="q"
+            placeholder="Search GIFs"
+            required
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellCheck="false"
+            dir="auto"
+          />
+          <input
+            type="image"
+            class="powered-button"
+            src={poweredByGiphyURL}
+            width="86"
+            height="30"
+          />
+        </form>
+      </header>
+      <main ref={scrollableRef} class={uiState === 'loading' ? 'loading' : ''}>
+        {uiState === 'default' && (
+          <div class="ui-state">
+            <p class="insignificant">Type to search GIFs</p>
+          </div>
+        )}
+        {uiState === 'loading' && !results?.data?.length && (
+          <div class="ui-state">
+            <Loader abrupt />
+          </div>
+        )}
+        {results?.data?.length > 0 ? (
+          <>
+            <ul>
+              {results.data.map((gif) => {
+                const { id, images, title, alt_text } = gif;
+                const {
+                  fixed_height_small,
+                  fixed_height_downsampled,
+                  fixed_height,
+                  original,
+                } = images;
+                const theImage = fixed_height_small?.url
+                  ? fixed_height_small
+                  : fixed_height_downsampled?.url
+                  ? fixed_height_downsampled
+                  : fixed_height;
+                let { url, webp, width, height } = theImage;
+                if (+height > 100) {
+                  width = (width / height) * 100;
+                  height = 100;
+                }
+                const urlObj = new URL(url);
+                const strippedURL = urlObj.origin + urlObj.pathname;
+                let strippedWebP;
+                if (webp) {
+                  const webpObj = new URL(webp);
+                  strippedWebP = webpObj.origin + webpObj.pathname;
+                }
+                return (
+                  <li key={id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const { mp4, url } = original;
+                        const theURL = mp4 || url;
+                        const urlObj = new URL(theURL);
+                        const strippedURL = urlObj.origin + urlObj.pathname;
+                        onClose();
+                        onSelect({
+                          url: strippedURL,
+                          type: mp4 ? 'video/mp4' : 'image/gif',
+                          alt_text: alt_text || title,
+                        });
+                      }}
+                    >
+                      <figure
+                        style={{
+                          '--figure-width': width + 'px',
+                          // width: width + 'px'
+                        }}
+                      >
+                        <picture>
+                          {strippedWebP && (
+                            <source srcset={strippedWebP} type="image/webp" />
+                          )}
+                          <img
+                            src={strippedURL}
+                            width={width}
+                            height={height}
+                            loading="lazy"
+                            decoding="async"
+                            alt={alt_text}
+                            referrerpolicy="no-referrer"
+                            onLoad={(e) => {
+                              e.target.style.backgroundColor = 'transparent';
+                            }}
+                          />
+                        </picture>
+                        <figcaption>{alt_text || title}</figcaption>
+                      </figure>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <p class="pagination">
+              {results.pagination?.offset > 0 && (
+                <button
+                  type="button"
+                  class="light small"
+                  disabled={uiState === 'loading'}
+                  onClick={() => {
+                    fetchGIFs({
+                      offset: results.pagination?.offset - GIFS_PER_PAGE,
+                    });
+                  }}
+                >
+                  <Icon icon="chevron-left" />
+                  <span>Previous</span>
+                </button>
+              )}
+              <span />
+              {results.pagination?.offset + results.pagination?.count <
+                results.pagination?.total_count && (
+                <button
+                  type="button"
+                  class="light small"
+                  disabled={uiState === 'loading'}
+                  onClick={() => {
+                    fetchGIFs({
+                      offset: results.pagination?.offset + GIFS_PER_PAGE,
+                    });
+                  }}
+                >
+                  <span>Next</span> <Icon icon="chevron-right" />
+                </button>
+              )}
+            </p>
+          </>
+        ) : (
+          uiState === 'results' && (
+            <div class="ui-state">
+              <p>No results</p>
+            </div>
+          )
+        )}
+        {uiState === 'error' && (
+          <div class="ui-state">
+            <p>Error loading GIFs</p>
+          </div>
+        )}
       </main>
     </div>
   );

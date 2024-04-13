@@ -1,3 +1,4 @@
+// G999 -->
 import '../pages/accounts.css';
 
 import { Menu, MenuDivider, MenuItem } from '@szhsin/react-menu';
@@ -90,3 +91,4 @@ function AccountsMenu() {
 }
 
 export default AccountsMenu;
+// <-- G999

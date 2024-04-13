@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from 'preact/hooks';
+import punycode from 'punycode';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useSnapshot } from 'valtio';
 
@@ -150,7 +151,7 @@ function AccountStatuses() {
       }
     }
 
-    const results = [];
+    let results = [];
     if (firstLoad) {
       const { value } = await masto.v1.accounts
         .$select(id)
@@ -191,6 +192,26 @@ function AccountStatuses() {
     }
     const { value, done } = await accountStatusesIterator.current.next();
     if (value?.length) {
+      // Check if value is same as pinned post (results)
+      // If the index for every post is the same, means API might not support pinned posts
+      if (results.length) {
+        let pinnedStatusesIds = [];
+        if (results[0]?.type === 'pinned') {
+          pinnedStatusesIds = results[0].id;
+        } else {
+          pinnedStatusesIds = results
+            .filter((status) => status._pinned)
+            .map((status) => status.id);
+        }
+        const containsAllPinned = pinnedStatusesIds.every((postId) =>
+          value.some((status) => status.id === postId),
+        );
+        if (containsAllPinned) {
+          // Remove pinned posts
+          results = [];
+        }
+      }
+
       results.push(...value);
 
       value.forEach((item) => {
@@ -206,8 +227,12 @@ function AccountStatuses() {
   const [featuredTags, setFeaturedTags] = useState([]);
   useTitle(
     account?.acct
-      ? `${account?.displayName ? account.displayName + ' ' : ''}@${
-          account.acct
+      ? `${
+          account?.displayName
+            ? `${account.displayName} (${/@/.test(account.acct) ? '' : '@'}${
+                account.acct
+              })`
+            : `${/@/.test(account.acct) ? '' : '@'}${account.acct}`
         }${
           !excludeReplies
             ? ' (+ Replies)'
@@ -259,27 +284,21 @@ function AccountStatuses() {
 
   const { displayName, acct, emojis } = account || {};
 
-  const accountInfoMemo = useMemo(() => {
-    const cachedAccount = snapStates.accounts[`${id}@${instance}`];
-    return (
-      <AccountInfo
-        instance={instance}
-        account={cachedAccount || id}
-        fetchAccount={fetchAccount}
-        authenticated={authenticated}
-        standalone
-      />
-    );
-  }, [id, instance, authenticated, fetchAccount]);
-
   const filterBarRef = useRef();
   const TimelineStart = useMemo(() => {
     const filtered =
       !excludeReplies || excludeBoosts || tagged || media || !!month;
+    const cachedAccount = snapStates.accounts[`${id}@${instance}`];
 
     return (
       <>
-        {accountInfoMemo}
+        <AccountInfo
+          instance={instance}
+          account={cachedAccount || id}
+          fetchAccount={fetchAccount}
+          authenticated={authenticated}
+          standalone
+        />
         <div
           class="filter-bar"
           ref={filterBarRef}
@@ -377,14 +396,14 @@ function AccountStatuses() {
                           }
                         : {},
                     );
+                    const [year, month] = value.split('-');
+                    const monthIndex = parseInt(month, 10) - 1;
+                    const date = new Date(year, monthIndex);
                     showToast(
-                      `Showing posts in ${new Date(value).toLocaleString(
-                        'default',
-                        {
-                          month: 'long',
-                          year: 'numeric',
-                        },
-                      )}`,
+                      `Showing posts in ${date.toLocaleString('default', {
+                        month: 'long',
+                        year: 'numeric',
+                      })}`,
                     );
                   }}
                 />
@@ -418,6 +437,7 @@ function AccountStatuses() {
     instance,
     authenticated,
     featuredTags,
+    fetchAccount,
     searchEnabled,
     ...allSearchParams,
   ]);
@@ -517,7 +537,13 @@ function AccountStatuses() {
           >
             <Icon icon="transfer" />{' '}
             <small class="menu-double-lines">
-              Switch to account's instance (<b>{accountInstance}</b>)
+              Switch to account's instance{' '}
+              {accountInstance ? (
+                <>
+                  {' '}
+                  (<b>{punycode.toUnicode(accountInstance)}</b>)
+                </>
+              ) : null}
             </small>
           </MenuItem>
           {!sameCurrentInstance && (

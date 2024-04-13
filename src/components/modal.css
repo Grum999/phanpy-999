@@ -9,15 +9,22 @@
   justify-content: center;
   align-items: center;
   background-color: var(--backdrop-color);
-  backdrop-filter: blur(4px);
-}
-#modal-container > div .sheet {
-  transform-origin: center bottom;
-}
-#modal-container > div:has(~ div) .sheet {
-  transform: scale(0.975);
-}
+  /* G999
+  animation: appear 0.5s var(--timing-function) both;
+  G999 */
 
-#modal-container > .light {
-  backdrop-filter: saturate(0.75);
+  &.solid {
+    background-color: var(--backdrop-solid-color);
+  }
+
+  .sheet {
+    /* G999
+    transition: transform 0.3s var(--timing-function);
+    G999 */
+    transform-origin: center bottom;
+  }
+
+  &:has(~ div) .sheet {
+    transform: scale(0.975);
+  }
 }

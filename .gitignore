@@ -22,11 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.kate-swp
 
 # Custom
 .env.dev
-src/data/instances-full.json
 phanpy-dist.zip
 phanpy-dist.tar.gz
-# G999
-*.kate-swp
+
